@@ -1204,6 +1204,7 @@ for case in cases:
         muscle_joint_torques_col_opt = np.zeros((number_of_joints, polynomial_order * number_of_mesh_intervals))
         biological_joint_torques_equilibrium_residual_col_opt = np.zeros((number_of_joints, polynomial_order * number_of_mesh_intervals))
         time_col_opt = np.zeros((1, polynomial_order * number_of_mesh_intervals))
+        metabolicEnergyRate_col_opt = np.zeros((number_of_muscles, polynomial_order * number_of_mesh_intervals))
 
         index = 0
         previous_time = 0
@@ -1225,14 +1226,22 @@ for case in cases:
             vMT_col_opt[:, i] = np.reshape(vMTj_lr,(number_of_muscles,))
             dM_col_opt[:, :, i] = dMj
 
+
+
             [hillEquilibriumj, Fj, activeFiberForcej, passiveFiberForcej,
              normActiveFiberLengthForcej, normFiberLengthj, fiberVelocityj, activeFiberForce_effectivej, passiveFiberForce_effectivej] = (
                 f_hillEquilibrium(a_col_opt[:, i], lMTj_lr, vMTj_lr,
                                   normF_nsc_col_opt[:, i], normFDt_nsc_col_opt[:, i], muscle_scaling_vector_opt,
-                                  model_mass_scaling_opt))
+                                  muscle_scaling_vector_opt))
             active_muscle_force_col_opt[:, i] = np.reshape(activeFiberForce_effectivej,(number_of_muscles,))
             passive_muscle_force_col_opt[:, i] = np.reshape(passiveFiberForce_effectivej,(number_of_muscles,))
             hillEquilibrium_residual_col_opt[:, i] = np.reshape(hillEquilibriumj,(number_of_muscles,))
+
+            metabolicEnergyRate_col_opt[:, i] = f_metabolicsBhargava(
+                a_col_opt[:, i], a_col_opt[:, i], normFiberLengthj, fiberVelocityj,
+                activeFiberForcej, passiveFiberForcej,
+                normActiveFiberLengthForcej, muscle_scaling_vector_opt, muscle_scaling_vector_opt)[5]
+
 
             for j in range(len(muscle_actuated_joints_indices_in_joints)):
                 joint = joints[muscle_actuated_joints_indices_in_joints[j]]

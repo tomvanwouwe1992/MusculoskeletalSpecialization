@@ -4,7 +4,7 @@ import pickle
 from tensorflow import keras
 import tensorflow as tf
 from matplotlib import pyplot
-import opensim
+# import opensim
 from matplotlib.backends.backend_pdf import PdfPages
 # from keras.models import Sequential
 # from keras.layers import Dense
