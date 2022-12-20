@@ -10,6 +10,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import casadi as ca
 from matplotlib.ticker import MultipleLocator,FormatStrFormatter,MaxNLocator
+import pandas
 
 
 # Some general figure settings
@@ -38,12 +39,20 @@ marathoners_names = ['Kipchoge', 'Bekele', 'Legese', 'Geremew', 'Kimetto', 'Ekir
 # ...
 cases_sprinting = ['1','2','5']
 cases_models = ['1','2','4']
-
+cmap = mpl.colormaps['Accent']
 colormap_5 = [(140/255,86/255,75/255),
             (227/255,119/255,194/255),
             (127/255,127/255,127/255),
             (188/255,189/255,34/255),
             (23/255,190/255,207/255)]
+
+colormap_5 = [cmap.colors[6],
+              cmap.colors[4],
+              cmap.colors[0],
+              cmap.colors[0],
+               cmap.colors[2]]
+
+
 labels_models = ('GEN', 'SPRINT_SKEL', 'MARATHON_SKEL')
 
 folder = 'ResultsSprinting'
@@ -51,7 +60,7 @@ pathMain = os.getcwd()
 pathTrajectories = os.path.join(pathMain, folder)
 pathTrajectories =folder
 optimaltrajectories = np.load(os.path.join(pathTrajectories,
-                                           'optimalTrajectories.npy'),
+                                           'optimaltrajectories.npy'),
                               allow_pickle=True).item()
 
 ## Sprinting speed
@@ -107,21 +116,45 @@ for i in range(len(cases_models)):
 
 x_values_sprinter = 0.5 + np.array((0.03, 0.06, 0.09, 0.12, 0.15, 0.18, 0.21))
 
+
+marathoners_names = ['Kipchoge', 'Bekele', 'Legese', 'Geremew', 'Kimetto', 'Ekiru', 'Chebet']
+
+
 for i in range(len(sprinter_names)):
     ax.scatter(x_values_sprinter[i], sprinters_mass[i], color=colormap_5[1], s=10)
-    if i < 5:
-        ax.text(x_values_sprinter[i] - 0.05, sprinters_mass[i] + 0.005, sprinter_names[i], fontsize = 6)
-    elif i < 6:
-        ax.text(x_values_sprinter[i] - 0.1, sprinters_mass[i] + 0.005, sprinter_names[i], fontsize = 6)
-    else:
-        ax.text(x_values_sprinter[i] - 0.15, sprinters_mass[i] - 0.015, sprinter_names[i], fontsize = 6)
+    if i == 0:
+        ax.text(x_values_sprinter[i] - 0.03, sprinters_mass[i] + 0.7, sprinter_names[i], fontsize = 8)
+    if i == 1:
+        ax.text(x_values_sprinter[i] - 0.03, sprinters_mass[i] + 0.7, sprinter_names[i], fontsize = 8)
+    if i == 2:
+        ax.text(x_values_sprinter[i] - 0.13, sprinters_mass[i] + 0.7, sprinter_names[i], fontsize = 8)
+    if i == 3:
+        ax.text(x_values_sprinter[i] - 0.03, sprinters_mass[i] + 0.7, sprinter_names[i], fontsize=8)
+    if i == 4:
+        ax.text(x_values_sprinter[i] + 0.0, sprinters_mass[i] + 0.7, sprinter_names[i], fontsize=8)
+    if i == 5:
+        ax.text(x_values_sprinter[i] - 0.13, sprinters_mass[i] + 0.7, sprinter_names[i], fontsize=8)
+    if i == 6:
+        ax.text(x_values_sprinter[i] - 0.06, sprinters_mass[i] - 2.5, sprinter_names[i], fontsize=8)
 
 
 x_values_marathoners = 1 + np.array((0.03, 0.06, 0.09, 0.12, 0.15, 0.18, 0.21))
 for i in range(len(marathoners_names)):
     ax.scatter(x_values_marathoners[i], marathoners_mass[i], color=colormap_5[2], s=10)
-    ax.text(x_values_marathoners[i], marathoners_mass[i] , marathoners_names[i], fontsize=6)
-
+    if i == 0:
+        ax.text(x_values_marathoners[i] - 0.06, marathoners_mass[i] - 2.5, marathoners_names[i], fontsize=8)
+    if i == 1:
+        ax.text(x_values_marathoners[i], marathoners_mass[i] - 2.5, marathoners_names[i], fontsize=8)
+    if i == 2:
+        ax.text(x_values_marathoners[i]-0.18, marathoners_mass[i]+0.8, marathoners_names[i], fontsize=8)
+    if i == 3:
+        ax.text(x_values_marathoners[i]- 0.2, marathoners_mass[i] + 1.5, marathoners_names[i], fontsize=8)
+    if i == 4:
+        ax.text(x_values_marathoners[i]+0.02, marathoners_mass[i] - 1.5, marathoners_names[i], fontsize=8)
+    if i == 5:
+        ax.text(x_values_marathoners[i]+0.02, marathoners_mass[i] - 1.5, marathoners_names[i], fontsize=8)
+    if i == 6:
+        ax.text(x_values_marathoners[i]+0.02, marathoners_mass[i] - 1.5, marathoners_names[i], fontsize=8)
 
 # no xtick labels
 ax.set_xticklabels([])
@@ -132,9 +165,9 @@ ax.set_yticklabels([])
 ax.set_yticks([])
 
 # ytick labels
-ax.set_yticks([0])
-ax.set_yticklabels(['0'])
-ax.set_ylim([50,100])
+ax.set_yticks([45])
+ax.set_yticklabels(['45'])
+ax.set_ylim([45,100])
 
 # no spines
 ax.spines['right'].set_visible(False)
@@ -142,7 +175,7 @@ ax.spines['top'].set_visible(False)
 ax.spines['left'].set_visible(False)
 
 # generate legend
-plt.legend(labels_models,loc='upper left',bbox_to_anchor=(1,0.5), fontsize = 10)
+# plt.legend(labels_models,loc='upper left',bbox_to_anchor=(1,0.5), fontsize = 10)
 plt.title('mass $[kg]$')
 plt.savefig('figures_paper/SKEL_mass.svg',format = 'svg')
 plt.savefig('figures_paper/SKEL_mass.jpg',format = 'jpg', dpi = 600)
@@ -259,7 +292,7 @@ body_scaling[0, :] = optimaltrajectories[cases_models[0]]['skeleton_scaling']
 body_scaling[1, :] = optimaltrajectories[cases_models[1]]['skeleton_scaling']
 body_scaling[2, :] = optimaltrajectories[cases_models[2]]['skeleton_scaling']
 
-fig = plt.figure(figsize=(6,3))
+fig = plt.figure(figsize=(8,3))
 fig.tight_layout(pad=5.0)
 # Body Length
 # Setup axes in figure
@@ -293,7 +326,7 @@ ax.text(0.3,1.0, '1.0', transform=ax.transAxes)
 angle_annotation = np.pi/2 + 20*np.pi/180
 ax.plot([angle_annotation, angle_annotation], [1, 1.3], color='k', linestyle='-', linewidth=1)
 # generate legend
-plt.title('body length scaling')
+plt.title('body length')
 
 
 
@@ -328,7 +361,7 @@ ax.text(0.3,1.0, '1.0', transform=ax.transAxes)
 angle_annotation = np.pi/2  + 20*np.pi/180
 ax.plot([angle_annotation, angle_annotation], [1, 1.3], color='k', linestyle='-', linewidth=1)
 # generate legend
-plt.title('body depth scaling')
+plt.title('body depth')
 
 
 
@@ -363,7 +396,7 @@ ax.text(0.3,1.0, '1.0', transform=ax.transAxes)
 angle_annotation = np.pi/2 + 20*np.pi/180
 ax.plot([angle_annotation, angle_annotation], [1, 1.3], color='k', linestyle='-', linewidth=1)
 # generate legend
-plt.title('body width scaling')
+plt.title('body width')
 
 
 plt.show()

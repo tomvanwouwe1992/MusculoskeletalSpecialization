@@ -3,13 +3,9 @@ import casadi as ca
 import numpy as np
 import copy
 import sys
-
-import compareFunctions
 import utilities
 from settings_sprinting import getSettings
 import muscleData
-import NeMu_subfunctions
-from NeMu_subfunctions import NeMuApproximation
 import casadiFunctions
 from muscleData import getMTParameters
 from muscleData import tendonStiffness
