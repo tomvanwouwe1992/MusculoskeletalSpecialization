@@ -820,9 +820,6 @@ def solve_with_bounds(opti, tolerance):
         # Get guess
         constraintViolation_guess = opti.debug.value(opti.g, opti.initial())
         guess = opti.debug.value(opti.x, opti.initial())
-        print(np.sum(guess))
-        firstPart = constraintViolation_guess[:1107*50]
-        print(np.amax(np.abs(firstPart)))
         # Sparsity pattern of the constraint Jacobian
         jac = ca.jacobian(opti.g, opti.x)
         sp = (ca.DM(jac.sparsity(), 1)).sparse()

@@ -6,7 +6,6 @@ import multiprocessing
 import NeMu_subfunctions
 from NeMu_subfunctions import get_muscle_and_coordinate_information
 from NeMu_subfunctions import testNeMu_Geometry_efficient
-from matplotlib import pyplot
 
 if __name__ == '__main__':
 
