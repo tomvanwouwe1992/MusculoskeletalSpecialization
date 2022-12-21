@@ -36,8 +36,10 @@ marathoners_names = ['Kipchoge', 'Bekele', 'Legese', 'Geremew', 'Kimetto', 'Ekir
 # 2 SPRINT_SKEL - sprinting
 # 3 GEN - marathon
 # 4 MARATHON_SKEL - marathon
-# ...
+# 5 MARATHON_SKEL - sprinting
+# 6 SPRINTING_SKEL - sprinting
 cases_sprinting = ['1','2','5']
+cases_marathon = ['3','6','4']
 cases_models = ['1','2','4']
 cmap = mpl.colormaps['Accent']
 colormap_5 = [(140/255,86/255,75/255),
@@ -46,10 +48,10 @@ colormap_5 = [(140/255,86/255,75/255),
             (188/255,189/255,34/255),
             (23/255,190/255,207/255)]
 
-colormap_5 = [cmap.colors[6],
+colormap_5 = [cmap.colors[7],
               cmap.colors[4],
               cmap.colors[0],
-              cmap.colors[0],
+              cmap.colors[1],
                cmap.colors[2]]
 
 
@@ -99,6 +101,81 @@ plt.legend(labels_models,loc='upper left',bbox_to_anchor=(1,0.5), fontsize = 10)
 plt.title('sprinting speed $[m/s]$')
 plt.savefig('figures_paper/SKEL_sprinting_speed.svg',format = 'svg')
 plt.savefig('figures_paper/SKEL_sprinting_speed.jpg',format = 'jpg', dpi = 600)
+
+## Marathon energy cost
+
+# Set-up figure canvas
+fig = plt.figure(figsize=(6,3))
+# Setup axes in figure
+ax = plt.axes((0.1,0.1,0.5,0.8)) # relative positions
+x_values = np.array((0,0.5,1))
+
+for i in range(len(cases_marathon)):
+    y_value = np.around(optimaltrajectories[cases_marathon[i]]['metabolic_energy_outcomes']['marathon_total_metabolic_energy_kcal_opt'], decimals=0).flatten()
+    bar_i = ax.bar(x = x_values[i] , height = y_value, width = 0.45, color = colormap_5[i], label = labels_models[i])
+    ax.bar_label(bar_i) # add bar label
+
+# no xtick labels
+ax.set_xticklabels([])
+ax.set_xticks([])
+
+# no ytick labels
+ax.set_yticklabels([])
+ax.set_yticks([])
+
+# ytick labels
+ax.set_yticks([0])
+ax.set_yticklabels(['0'])
+ax.set_ylim([0,4200])
+
+# no spines
+ax.spines['right'].set_visible(False)
+ax.spines['top'].set_visible(False)
+ax.spines['left'].set_visible(False)
+
+# generate legend
+plt.legend(labels_models,loc='upper left',bbox_to_anchor=(1,0.5), fontsize = 10)
+plt.title('marathon energy cost $[kcal]$')
+plt.savefig('figures_paper/SKEL_marathon_energy_cost.svg',format = 'svg')
+plt.savefig('figures_paper/SKEL_marathon_energy_cost.jpg',format = 'jpg', dpi = 600)
+
+
+## Marathon energy cost
+
+# Set-up figure canvas
+fig = plt.figure(figsize=(6,3))
+# Setup axes in figure
+ax = plt.axes((0.1,0.1,0.5,0.8)) # relative positions
+x_values = np.array((0,0.5,1))
+
+for i in range(len(cases_marathon)):
+    y_value = np.around(optimaltrajectories[cases_marathon[i]]['metabolic_energy_outcomes']['marathon_total_metabolic_energy_perKG_kcal_opt'], decimals=0).flatten()
+    bar_i = ax.bar(x = x_values[i] , height = y_value, width = 0.45, color = colormap_5[i], label = labels_models[i])
+    ax.bar_label(bar_i) # add bar label
+
+# no xtick labels
+ax.set_xticklabels([])
+ax.set_xticks([])
+
+# no ytick labels
+ax.set_yticklabels([])
+ax.set_yticks([])
+
+# ytick labels
+ax.set_yticks([0])
+ax.set_yticklabels(['0'])
+ax.set_ylim([0,55])
+
+# no spines
+ax.spines['right'].set_visible(False)
+ax.spines['top'].set_visible(False)
+ax.spines['left'].set_visible(False)
+
+# generate legend
+plt.legend(labels_models,loc='upper left',bbox_to_anchor=(1,0.5), fontsize = 10)
+plt.title('normalized marathon energy cost $[kcal/kg]$')
+plt.savefig('figures_paper/SKEL_marathon_energy_perKG_cost.svg',format = 'svg')
+plt.savefig('figures_paper/SKEL_marathon_energy_perKG_cost.jpg',format = 'jpg', dpi = 600)
 
 
 ## Mass
@@ -222,8 +299,8 @@ ax.set_yticklabels([])
 ax.set_yticks([])
 
 # ytick labels
-ax.set_yticks([1.6,2])
-ax.set_yticklabels(['1.6','2.0'])
+ax.set_yticks([1.6])
+ax.set_yticklabels(['1.6'])
 ax.set_ylim([1.6,2])
 
 # no spines
@@ -399,44 +476,48 @@ ax.plot([angle_annotation, angle_annotation], [1, 1.3], color='k', linestyle='-'
 plt.title('body width')
 
 
-plt.show()
-## Sprinting speed
-# Generate data matrix/vector to plot
-sprintingSpeeds = np.zeros((3,))
-sprintingSpeeds[0] = np.around(optimaltrajectories['6']['speed'], decimals=2)
-sprintingSpeeds[1] = np.around(optimaltrajectories['7']['speed'], decimals=2)
-sprintingSpeeds[2] = np.around(optimaltrajectories['2']['speed'], decimals=2)
 
-# Setup x-axis
-sprintingSpeeds_x = np.array((1,2,3))
-# Set-up figure canvas
-fig = plt.figure(figsize=(6,3))
+
+
+
+fig = plt.figure(figsize=(6,3.5))
+
+# Hip flexion
 # Setup axes in figure
-ax = plt.axes((0.1,0.1,0.5,0.8)) # relative positions
-# Setup
-for i in range(len(sprintingSpeeds)):
-    bar_i = ax.bar(x = sprintingSpeeds_x[i], height = sprintingSpeeds[i], width = 0.5, color = colormap_5[i], label = labels_models[i])
-    ax.bar_label(bar_i) # add bar label
+ax = fig.add_subplot((121), projection='polar')
+for i in range(len(cases_models)):
+    maximal_isometric_torques_generic = optimaltrajectories[cases_models[0]]['maximal_isometric_torques']
+    maximal_isometric_torques = optimaltrajectories[cases_models[i]]['maximal_isometric_torques']
+    label_loc = np.linspace(start=0, stop=2 * np.pi, num=7)
+    maximal_isometric_torques_generic_overall = np.amax(np.abs(maximal_isometric_torques_generic), 0)
+    maximal_isometric_torques_overall = np.amax(np.abs(maximal_isometric_torques),0)
 
-# no xtick labels
-ax.set_xticklabels([])
-ax.set_xticks([])
+    maximal_isometric_torques_overall = maximal_isometric_torques_overall / maximal_isometric_torques_generic_overall
+    maximal_isometric_torques_overall = np.concatenate((maximal_isometric_torques_overall, np.reshape(maximal_isometric_torques_overall[0],(1,))))
+    ax.plot(label_loc, maximal_isometric_torques_overall, label=labels_models[i], color = colormap_5[i])
 
-# ytick labels
-ax.set_yticks([6])
-ax.set_yticklabels('6')
-ax.set_ylim([6, 8.3])
 
-# no spines
-ax.spines['right'].set_visible(False)
-ax.spines['top'].set_visible(False)
-ax.spines['left'].set_visible(False)
+labels_max_iso_torque = ['hip \n extension', 'hip \n flexion', 'knee \n extension', 'knee \n flexion', 'ankle \n extension', 'ankle \n flexion']
+ax.set_xticks(np.linspace(start=0, stop=2 * np.pi, num=len(labels_max_iso_torque)+1))
+ax.set_xticklabels([*labels_max_iso_torque, labels_max_iso_torque[0]])
 
-# generate legend
-plt.legend(labels_models,loc='upper left',bbox_to_anchor=(1,0.5))
-plt.title('maximal running speed [m/s]')
-plt.savefig('figures_presentation/max_running_speed_morphology.svg',format = 'svg')
-plt.savefig('figures_presentation/max_running_speed_morphology.jpg',format = 'jpg', dpi = 600)
+ax.spines['polar'].set_visible(False)
+ax.tick_params(pad = 5)
+ax.get_yaxis().set_visible(False)
+ax.set_ylim([0, 1.5])
+ax.text(0.5,0.5, '0', transform=ax.transAxes)
+ax.text(0.6,0.9, '1.0', transform=ax.transAxes)
+ax.plot(label_loc_unit_circle, unit_circle, label='unit circle', color = (0,0,0), linewidth=1)
+
+plt.legend(labels_models[:3],loc='upper left',bbox_to_anchor=(1.5,0.75))
+plt.title('maximal isometric torque [-] \n normalized to generic')
+plt.savefig('figures_paper/max_iso_torque_simple_morphology.svg',format = 'svg')
+plt.savefig('figures_paper/max_iso_torque_simple_morphology.jpg',format = 'jpg', dpi =1200)
+
+
+
+
+plt.show()
 
 
 
@@ -569,134 +650,6 @@ plt.legend(labels_models,loc='upper left',bbox_to_anchor=(1,0.5))
 plt.title('contact time sprinting [ms]')
 plt.savefig('figures_presentation/contact_time_sprinting_morphology.svg',format = 'svg')
 plt.savefig('figures_presentation/contact_time_sprinting_morphology.jpg',format = 'jpg', dpi = 600)
-
-
-
-## COT at marathon pace (3.33 m/s)
-# Generate data matrix/vector to plot
-sprintingSpeeds = np.zeros((3,))
-sprintingSpeeds[0] = np.round_(optimaltrajectories['5']['COT'], decimals=2)
-sprintingSpeeds[1] = np.round_(optimaltrajectories['1']['COT'], decimals=2)
-sprintingSpeeds[2] = np.round_(optimaltrajectories['8']['COT'] + 0.004, decimals=2)
-
-# Setup x-axis
-sprintingSpeeds_x = np.array((1,2,3))
-# Set-up figure canvas
-fig = plt.figure(figsize=(6,3))
-# Setup axes in figure
-ax = plt.axes((0.1,0.1,0.5,0.8)) # relative positions
-# Setup
-for i in range(len(sprintingSpeeds)):
-    bar_i = ax.bar(x = sprintingSpeeds_x[i], height = sprintingSpeeds[i], width = 0.5, color = colormap_5[i], label = labels_models[i])
-    ax.bar_label(bar_i) # add bar label
-
-# no xtick labels
-ax.set_xticklabels([])
-ax.set_xticks([])
-
-# ytick labels
-ax.set_yticklabels('3.5')
-ax.set_yticks([3.5])
-ax.set_ylim([3.5, 4.5])
-
-# no spines
-ax.spines['right'].set_visible(False)
-ax.spines['top'].set_visible(False)
-ax.spines['left'].set_visible(False)
-
-# generate legend
-plt.legend(labels_models,loc='upper left',bbox_to_anchor=(1,0.5))
-plt.title('cost of transport at 3.33m/s [J/kg/m]')
-plt.savefig('figures_presentation/cost_of_transport_marathon_morphology.svg',format = 'svg')
-plt.savefig('figures_presentation/cost_of_transport_marathon_morphology.jpg',format = 'jpg', dpi = 600)
-
-
-
-## Absolute energy cost
-# Generate data matrix/vector to plot
-sprintingSpeeds = np.zeros((3,))
-sprintingSpeeds[0] = np.round_(optimaltrajectories['5']['COT']*optimaltrajectories['5']['model_mass']*42196*0.000239006, decimals=0)
-sprintingSpeeds[1] = np.round_(optimaltrajectories['1']['COT']*optimaltrajectories['1']['model_mass']*42196*0.000239006, decimals=0)
-sprintingSpeeds[2] = np.round_(optimaltrajectories['8']['COT']*optimaltrajectories['8']['model_mass']*42196*0.000239006, decimals=0)
-
-# Setup x-axis
-sprintingSpeeds_x = np.array((1,2,3))
-# Set-up figure canvas
-fig = plt.figure(figsize=(6,3))
-# Setup axes in figure
-ax = plt.axes((0.1,0.1,0.5,0.8)) # relative positions
-# Setup
-for i in range(len(sprintingSpeeds)):
-    bar_i = ax.bar(x = sprintingSpeeds_x[i], height = sprintingSpeeds[i], width = 0.5, color = colormap_5[i], label = labels_models[i])
-    ax.bar_label(bar_i) # add bar label
-
-# no xtick labels
-ax.set_xticklabels([])
-ax.set_xticks([])
-
-# ytick labels
-ax.set_yticklabels('1800')
-ax.set_yticks([1800])
-
-ax.set_ylim([1800, 3600])
-
-# no spines
-ax.spines['right'].set_visible(False)
-ax.spines['top'].set_visible(False)
-ax.spines['left'].set_visible(False)
-
-# generate legend
-plt.legend(labels_models,loc='upper left',bbox_to_anchor=(1,0.5))
-plt.title('Marathon energy cost [kcal]')
-plt.savefig('figures_presentation/absolute_energy_cost_morphology.svg',format = 'svg')
-plt.savefig('figures_presentation/absolute_energy_cost_morphology.jpg',format = 'jpg', dpi = 600)
-
-
-
-
-## Energy at marathon pace (3.33 m/s)
-# Generate data matrix/vector to plot
-sprintingSpeeds = np.zeros((3,))
-sprintingSpeeds[0] = np.round_(optimaltrajectories['5']['objective_terms']['metabolicEnergyRateTerm'] + optimaltrajectories['5']['objective_terms']['activationTerm'] + optimaltrajectories['5']['objective_terms']['armExcitationTerm'] + optimaltrajectories['5']['objective_terms']['jointAccelerationTerm'], decimals=0)
-sprintingSpeeds[1] = np.round_(optimaltrajectories['1']['objective_terms']['metabolicEnergyRateTerm'] + optimaltrajectories['1']['objective_terms']['activationTerm'] + optimaltrajectories['1']['objective_terms']['armExcitationTerm'] + optimaltrajectories['1']['objective_terms']['jointAccelerationTerm'], decimals=0)
-sprintingSpeeds[2] = np.round_(optimaltrajectories['8']['objective_terms']['metabolicEnergyRateTerm'] + optimaltrajectories['8']['objective_terms']['activationTerm'] + optimaltrajectories['8']['objective_terms']['armExcitationTerm'] + optimaltrajectories['8']['objective_terms']['jointAccelerationTerm'], decimals=0)
-
-# Setup x-axis
-sprintingSpeeds_x = np.array((1,2,3))
-# Set-up figure canvas
-fig = plt.figure(figsize=(6,3))
-# Setup axes in figure
-ax = plt.axes((0.1,0.1,0.5,0.8)) # relative positions
-# Setup
-for i in range(len(sprintingSpeeds)):
-    bar_i = ax.bar(x = sprintingSpeeds_x[i], height = sprintingSpeeds[i], width = 0.5, color = colormap_5[i], label = labels_models[i])
-    ax.bar_label(bar_i) # add bar label
-
-# no xtick labels
-ax.set_xticklabels([])
-ax.set_xticks([])
-
-# ytick labels
-ax.set_yticklabels('800')
-ax.set_yticks([800])
-
-ax.set_ylim([800, 1500])
-
-# no spines
-ax.spines['right'].set_visible(False)
-ax.spines['top'].set_visible(False)
-ax.spines['left'].set_visible(False)
-
-# generate legend
-plt.legend(labels_models,loc='upper left',bbox_to_anchor=(1,0.5))
-plt.title('$J_{energy}$ at 3.33m/s [-/kg/m]')
-
-plt.savefig('figures_presentation/energy_cost_function_morphology.svg',format = 'svg')
-plt.savefig('figures_presentation/energy_cost_function_morphology.jpg',format = 'jpg', dpi = 600)
-
-
-
-
 
 ## Step length
 # Generate data matrix/vector to plot

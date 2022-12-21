@@ -1,0 +1,364 @@
+[2022-12-20 04:45:34.208] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 04:45:34.210] [warning] Couldn't find file 'sacrum.vtp'.
+[2022-12-20 04:45:34.211] [warning] Couldn't find file 'pelvis.vtp'.
+[2022-12-20 04:45:34.212] [warning] Couldn't find file 'tibia_r.vtp'.
+[2022-12-20 04:45:34.212] [warning] Couldn't find file 'talus_rv.vtp'.
+[2022-12-20 04:45:34.213] [warning] Couldn't find file 'tibia_l.vtp'.
+[2022-12-20 04:45:34.214] [warning] Couldn't find file 'talus_lv.vtp'.
+[2022-12-20 04:45:34.216] [warning] Couldn't find file 'ulna_rv.vtp'.
+[2022-12-20 04:45:34.217] [warning] Couldn't find file 'radius_rv.vtp'.
+[2022-12-20 04:45:34.217] [warning] Couldn't find file 'pisiform_rvs.vtp'.
+[2022-12-20 04:45:34.218] [warning] Couldn't find file 'scaphoid_rvs.vtp'.
+[2022-12-20 04:45:34.218] [warning] Couldn't find file 'triquetrum_rvs.vtp'.
+[2022-12-20 04:45:34.219] [warning] Couldn't find file 'trapezoid_rvs.vtp'.
+[2022-12-20 04:45:34.219] [warning] Couldn't find file 'trapezium_rvs.vtp'.
+[2022-12-20 04:45:34.220] [warning] Couldn't find file 'middle_proximal_rvs.vtp'.
+[2022-12-20 04:45:34.220] [warning] Couldn't find file 'middle_medial_rvs.vtp'.
+[2022-12-20 04:45:34.220] [warning] Couldn't find file 'middle_distal_rvs.vtp'.
+[2022-12-20 04:45:34.221] [warning] Couldn't find file 'ring_proximal_rvs.vtp'.
+[2022-12-20 04:45:34.221] [warning] Couldn't find file 'ring_medial_rvs.vtp'.
+[2022-12-20 04:45:34.221] [warning] Couldn't find file 'ring_distal_rvs.vtp'.
+[2022-12-20 04:45:34.222] [warning] Couldn't find file 'thumb_proximal_rvs.vtp'.
+[2022-12-20 04:45:34.223] [warning] Couldn't find file 'thumb_distal_rvs.vtp'.
+[2022-12-20 04:45:34.223] [warning] Couldn't find file 'ulna_lv.vtp'.
+[2022-12-20 04:45:34.223] [warning] Couldn't find file 'radius_lv.vtp'.
+[2022-12-20 04:45:34.223] [warning] Couldn't find file 'pisiform_lvs.vtp'.
+[2022-12-20 04:45:34.224] [warning] Couldn't find file 'scaphoid_lvs.vtp'.
+[2022-12-20 04:45:34.224] [warning] Couldn't find file 'triquetrum_lvs.vtp'.
+[2022-12-20 04:45:34.225] [warning] Couldn't find file 'trapezoid_lvs.vtp'.
+[2022-12-20 04:45:34.225] [warning] Couldn't find file 'trapezium_lvs.vtp'.
+[2022-12-20 04:45:34.228] [warning] Couldn't find file 'middle_proximal_lvs.vtp'.
+[2022-12-20 04:45:34.228] [warning] Couldn't find file 'middle_medial_lvs.vtp'.
+[2022-12-20 04:45:34.228] [warning] Couldn't find file 'middle_distal_lvs.vtp'.
+[2022-12-20 04:45:34.229] [warning] Couldn't find file 'ring_proximal_lvs.vtp'.
+[2022-12-20 04:45:34.229] [warning] Couldn't find file 'ring_medial_lvs.vtp'.
+[2022-12-20 04:45:34.229] [warning] Couldn't find file 'ring_distal_lvs.vtp'.
+[2022-12-20 04:45:34.232] [warning] Couldn't find file 'thumb_proximal_lvs.vtp'.
+[2022-12-20 04:45:34.232] [warning] Couldn't find file 'thumb_distal_lvs.vtp'.
+[2022-12-20 04:45:34.294] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 04:45:34.295] [warning] Couldn't find file 'sacrum.vtp'.
+[2022-12-20 04:45:34.295] [warning] Couldn't find file 'pelvis.vtp'.
+[2022-12-20 04:45:34.296] [warning] Couldn't find file 'tibia_r.vtp'.
+[2022-12-20 04:45:34.296] [warning] Couldn't find file 'talus_rv.vtp'.
+[2022-12-20 04:45:34.297] [warning] Couldn't find file 'tibia_l.vtp'.
+[2022-12-20 04:45:34.298] [warning] Couldn't find file 'talus_lv.vtp'.
+[2022-12-20 04:45:34.300] [warning] Couldn't find file 'ulna_rv.vtp'.
+[2022-12-20 04:45:34.300] [warning] Couldn't find file 'radius_rv.vtp'.
+[2022-12-20 04:45:34.300] [warning] Couldn't find file 'pisiform_rvs.vtp'.
+[2022-12-20 04:45:34.300] [warning] Couldn't find file 'scaphoid_rvs.vtp'.
+[2022-12-20 04:45:34.300] [warning] Couldn't find file 'triquetrum_rvs.vtp'.
+[2022-12-20 04:45:34.301] [warning] Couldn't find file 'trapezoid_rvs.vtp'.
+[2022-12-20 04:45:34.301] [warning] Couldn't find file 'trapezium_rvs.vtp'.
+[2022-12-20 04:45:34.302] [warning] Couldn't find file 'middle_proximal_rvs.vtp'.
+[2022-12-20 04:45:34.302] [warning] Couldn't find file 'middle_medial_rvs.vtp'.
+[2022-12-20 04:45:34.302] [warning] Couldn't find file 'middle_distal_rvs.vtp'.
+[2022-12-20 04:45:34.303] [warning] Couldn't find file 'ring_proximal_rvs.vtp'.
+[2022-12-20 04:45:34.303] [warning] Couldn't find file 'ring_medial_rvs.vtp'.
+[2022-12-20 04:45:34.303] [warning] Couldn't find file 'ring_distal_rvs.vtp'.
+[2022-12-20 04:45:34.304] [warning] Couldn't find file 'thumb_proximal_rvs.vtp'.
+[2022-12-20 04:45:34.304] [warning] Couldn't find file 'thumb_distal_rvs.vtp'.
+[2022-12-20 04:45:34.305] [warning] Couldn't find file 'ulna_lv.vtp'.
+[2022-12-20 04:45:34.305] [warning] Couldn't find file 'radius_lv.vtp'.
+[2022-12-20 04:45:34.305] [warning] Couldn't find file 'pisiform_lvs.vtp'.
+[2022-12-20 04:45:34.306] [warning] Couldn't find file 'scaphoid_lvs.vtp'.
+[2022-12-20 04:45:34.306] [warning] Couldn't find file 'triquetrum_lvs.vtp'.
+[2022-12-20 04:45:34.306] [warning] Couldn't find file 'trapezoid_lvs.vtp'.
+[2022-12-20 04:45:34.306] [warning] Couldn't find file 'trapezium_lvs.vtp'.
+[2022-12-20 04:45:34.308] [warning] Couldn't find file 'middle_proximal_lvs.vtp'.
+[2022-12-20 04:45:34.308] [warning] Couldn't find file 'middle_medial_lvs.vtp'.
+[2022-12-20 04:45:34.308] [warning] Couldn't find file 'middle_distal_lvs.vtp'.
+[2022-12-20 04:45:34.308] [warning] Couldn't find file 'ring_proximal_lvs.vtp'.
+[2022-12-20 04:45:34.308] [warning] Couldn't find file 'ring_medial_lvs.vtp'.
+[2022-12-20 04:45:34.309] [warning] Couldn't find file 'ring_distal_lvs.vtp'.
+[2022-12-20 04:45:34.310] [warning] Couldn't find file 'thumb_proximal_lvs.vtp'.
+[2022-12-20 04:45:34.310] [warning] Couldn't find file 'thumb_distal_lvs.vtp'.
+[2022-12-20 04:45:34.362] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 04:45:34.363] [warning] Couldn't find file 'sacrum.vtp'.
+[2022-12-20 04:45:34.363] [warning] Couldn't find file 'pelvis.vtp'.
+[2022-12-20 04:45:34.364] [warning] Couldn't find file 'tibia_r.vtp'.
+[2022-12-20 04:45:34.365] [warning] Couldn't find file 'talus_rv.vtp'.
+[2022-12-20 04:45:34.366] [warning] Couldn't find file 'tibia_l.vtp'.
+[2022-12-20 04:45:34.366] [warning] Couldn't find file 'talus_lv.vtp'.
+[2022-12-20 04:45:34.368] [warning] Couldn't find file 'ulna_rv.vtp'.
+[2022-12-20 04:45:34.368] [warning] Couldn't find file 'radius_rv.vtp'.
+[2022-12-20 04:45:34.368] [warning] Couldn't find file 'pisiform_rvs.vtp'.
+[2022-12-20 04:45:34.369] [warning] Couldn't find file 'scaphoid_rvs.vtp'.
+[2022-12-20 04:45:34.369] [warning] Couldn't find file 'triquetrum_rvs.vtp'.
+[2022-12-20 04:45:34.369] [warning] Couldn't find file 'trapezoid_rvs.vtp'.
+[2022-12-20 04:45:34.370] [warning] Couldn't find file 'trapezium_rvs.vtp'.
+[2022-12-20 04:45:34.371] [warning] Couldn't find file 'middle_proximal_rvs.vtp'.
+[2022-12-20 04:45:34.371] [warning] Couldn't find file 'middle_medial_rvs.vtp'.
+[2022-12-20 04:45:34.371] [warning] Couldn't find file 'middle_distal_rvs.vtp'.
+[2022-12-20 04:45:34.371] [warning] Couldn't find file 'ring_proximal_rvs.vtp'.
+[2022-12-20 04:45:34.371] [warning] Couldn't find file 'ring_medial_rvs.vtp'.
+[2022-12-20 04:45:34.372] [warning] Couldn't find file 'ring_distal_rvs.vtp'.
+[2022-12-20 04:45:34.373] [warning] Couldn't find file 'thumb_proximal_rvs.vtp'.
+[2022-12-20 04:45:34.373] [warning] Couldn't find file 'thumb_distal_rvs.vtp'.
+[2022-12-20 04:45:34.373] [warning] Couldn't find file 'ulna_lv.vtp'.
+[2022-12-20 04:45:34.373] [warning] Couldn't find file 'radius_lv.vtp'.
+[2022-12-20 04:45:34.374] [warning] Couldn't find file 'pisiform_lvs.vtp'.
+[2022-12-20 04:45:34.374] [warning] Couldn't find file 'scaphoid_lvs.vtp'.
+[2022-12-20 04:45:34.374] [warning] Couldn't find file 'triquetrum_lvs.vtp'.
+[2022-12-20 04:45:34.374] [warning] Couldn't find file 'trapezoid_lvs.vtp'.
+[2022-12-20 04:45:34.375] [warning] Couldn't find file 'trapezium_lvs.vtp'.
+[2022-12-20 04:45:34.376] [warning] Couldn't find file 'middle_proximal_lvs.vtp'.
+[2022-12-20 04:45:34.376] [warning] Couldn't find file 'middle_medial_lvs.vtp'.
+[2022-12-20 04:45:34.376] [warning] Couldn't find file 'middle_distal_lvs.vtp'.
+[2022-12-20 04:45:34.376] [warning] Couldn't find file 'ring_proximal_lvs.vtp'.
+[2022-12-20 04:45:34.377] [warning] Couldn't find file 'ring_medial_lvs.vtp'.
+[2022-12-20 04:45:34.377] [warning] Couldn't find file 'ring_distal_lvs.vtp'.
+[2022-12-20 04:45:34.378] [warning] Couldn't find file 'thumb_proximal_lvs.vtp'.
+[2022-12-20 04:45:34.378] [warning] Couldn't find file 'thumb_distal_lvs.vtp'.
+[2022-12-20 04:45:34.794] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 04:45:34.794] [warning] Couldn't find file 'sacrum.vtp'.
+[2022-12-20 04:45:34.795] [warning] Couldn't find file 'pelvis.vtp'.
+[2022-12-20 04:45:34.795] [warning] Couldn't find file 'tibia_r.vtp'.
+[2022-12-20 04:45:34.796] [warning] Couldn't find file 'talus_rv.vtp'.
+[2022-12-20 04:45:34.796] [warning] Couldn't find file 'tibia_l.vtp'.
+[2022-12-20 04:45:34.797] [warning] Couldn't find file 'talus_lv.vtp'.
+[2022-12-20 04:45:34.799] [warning] Couldn't find file 'ulna_rv.vtp'.
+[2022-12-20 04:45:34.799] [warning] Couldn't find file 'radius_rv.vtp'.
+[2022-12-20 04:45:34.799] [warning] Couldn't find file 'pisiform_rvs.vtp'.
+[2022-12-20 04:45:34.800] [warning] Couldn't find file 'scaphoid_rvs.vtp'.
+[2022-12-20 04:45:34.800] [warning] Couldn't find file 'triquetrum_rvs.vtp'.
+[2022-12-20 04:45:34.800] [warning] Couldn't find file 'trapezoid_rvs.vtp'.
+[2022-12-20 04:45:34.800] [warning] Couldn't find file 'trapezium_rvs.vtp'.
+[2022-12-20 04:45:34.801] [warning] Couldn't find file 'middle_proximal_rvs.vtp'.
+[2022-12-20 04:45:34.801] [warning] Couldn't find file 'middle_medial_rvs.vtp'.
+[2022-12-20 04:45:34.802] [warning] Couldn't find file 'middle_distal_rvs.vtp'.
+[2022-12-20 04:45:34.802] [warning] Couldn't find file 'ring_proximal_rvs.vtp'.
+[2022-12-20 04:45:34.802] [warning] Couldn't find file 'ring_medial_rvs.vtp'.
+[2022-12-20 04:45:34.802] [warning] Couldn't find file 'ring_distal_rvs.vtp'.
+[2022-12-20 04:45:34.803] [warning] Couldn't find file 'thumb_proximal_rvs.vtp'.
+[2022-12-20 04:45:34.803] [warning] Couldn't find file 'thumb_distal_rvs.vtp'.
+[2022-12-20 04:45:34.804] [warning] Couldn't find file 'ulna_lv.vtp'.
+[2022-12-20 04:45:34.804] [warning] Couldn't find file 'radius_lv.vtp'.
+[2022-12-20 04:45:34.804] [warning] Couldn't find file 'pisiform_lvs.vtp'.
+[2022-12-20 04:45:34.804] [warning] Couldn't find file 'scaphoid_lvs.vtp'.
+[2022-12-20 04:45:34.804] [warning] Couldn't find file 'triquetrum_lvs.vtp'.
+[2022-12-20 04:45:34.805] [warning] Couldn't find file 'trapezoid_lvs.vtp'.
+[2022-12-20 04:45:34.805] [warning] Couldn't find file 'trapezium_lvs.vtp'.
+[2022-12-20 04:45:34.806] [warning] Couldn't find file 'middle_proximal_lvs.vtp'.
+[2022-12-20 04:45:34.806] [warning] Couldn't find file 'middle_medial_lvs.vtp'.
+[2022-12-20 04:45:34.806] [warning] Couldn't find file 'middle_distal_lvs.vtp'.
+[2022-12-20 04:45:34.807] [warning] Couldn't find file 'ring_proximal_lvs.vtp'.
+[2022-12-20 04:45:34.807] [warning] Couldn't find file 'ring_medial_lvs.vtp'.
+[2022-12-20 04:45:34.807] [warning] Couldn't find file 'ring_distal_lvs.vtp'.
+[2022-12-20 04:45:34.808] [warning] Couldn't find file 'thumb_proximal_lvs.vtp'.
+[2022-12-20 04:45:34.808] [warning] Couldn't find file 'thumb_distal_lvs.vtp'.
+[2022-12-20 04:47:01.429] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 04:47:01.490] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 04:47:01.551] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 04:47:01.877] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 04:48:45.160] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 04:48:45.219] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 04:48:45.276] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 04:48:45.608] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 04:50:40.220] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 04:50:40.278] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 04:50:40.336] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 04:50:40.665] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:00:32.034] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:00:32.102] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:00:32.162] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:00:32.500] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:00:52.041] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:00:52.106] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:00:52.171] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:00:52.524] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:02:05.928] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:02:05.987] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:02:06.045] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:02:06.377] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:02:35.948] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:02:36.011] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:02:36.072] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:02:36.441] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:28:11.480] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:28:11.544] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:28:11.602] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:28:11.944] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:29:14.702] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:29:14.760] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:29:14.817] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:29:15.161] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:29:15.846] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:29:41.994] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:29:42.052] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:29:42.110] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:29:42.440] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:29:43.129] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:30:30.711] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:30:30.770] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:30:30.832] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:30:31.187] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:30:32.009] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:31:18.222] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:31:18.279] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:31:18.338] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:31:18.663] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:31:19.477] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:33:04.977] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:33:05.035] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:33:05.096] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:33:05.438] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:33:06.337] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:34:12.571] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:34:12.629] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:34:12.688] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:34:13.013] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:34:13.789] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:35:59.038] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:35:59.096] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:35:59.154] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:35:59.482] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:36:00.258] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:38:30.708] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:38:30.768] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:38:30.828] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:38:31.158] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:38:31.936] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:39:57.872] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:39:57.932] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:39:57.994] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:39:58.325] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:39:59.004] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:40:24.904] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:40:24.962] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:40:25.021] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:40:25.358] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:40:26.124] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:41:56.742] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:41:56.805] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:41:56.875] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:41:57.213] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:41:57.927] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:44:41.696] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:44:41.762] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:44:41.824] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:44:42.165] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 05:44:43.308] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 11:50:08.794] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 11:50:08.880] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 11:50:08.941] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 11:50:09.294] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-20 11:50:10.212] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 00:02:51.650] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 00:02:51.796] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 00:02:51.915] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 00:02:52.572] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 00:02:54.148] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 00:16:11.049] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 00:16:11.371] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 00:16:11.745] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 00:16:14.207] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 00:16:17.370] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 00:25:23.910] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 00:25:23.971] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 00:25:24.031] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 00:25:24.350] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 00:25:25.329] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 00:26:58.188] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 00:26:58.248] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 00:26:58.311] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 00:26:58.643] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 00:26:59.422] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 00:32:06.763] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 00:32:06.852] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 00:32:06.935] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 00:32:07.460] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 00:32:08.657] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 00:39:25.288] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 00:39:25.345] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 00:39:25.403] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 00:39:25.736] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 00:39:26.544] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 00:52:01.173] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 00:52:01.232] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 00:52:01.290] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 00:52:01.614] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 00:52:02.486] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 00:53:57.165] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 00:53:57.223] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 00:53:57.280] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 00:53:57.605] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 00:53:58.364] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 00:55:34.487] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 00:55:34.546] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 00:55:34.603] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 00:55:34.926] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 00:55:35.693] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 00:56:15.473] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 00:56:15.531] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 00:56:15.593] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 00:56:15.930] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 00:56:16.694] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 00:56:54.507] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 00:56:54.566] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 00:56:54.624] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 00:56:54.966] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 00:56:55.751] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 01:09:49.102] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 01:09:49.191] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 01:09:49.265] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 01:09:49.763] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 01:09:51.099] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 01:12:28.148] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 01:12:28.207] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 01:12:28.267] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 01:12:28.587] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 01:12:29.355] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 01:19:05.764] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 01:19:05.820] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 01:19:05.878] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 01:19:06.210] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 01:19:06.971] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 01:21:32.901] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 01:21:32.966] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 01:21:33.024] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 01:21:33.351] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 01:21:34.127] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 01:34:21.411] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 01:34:21.472] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 01:34:21.528] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 01:34:21.852] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 01:34:22.631] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 01:44:51.578] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 01:44:51.634] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 01:44:51.696] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 01:44:52.019] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 01:44:52.891] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 01:46:26.625] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 01:46:26.683] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 01:46:26.739] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 01:46:27.063] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 01:46:27.745] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 02:34:48.723] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 02:34:48.819] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 02:34:48.899] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 02:34:49.340] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 02:34:50.255] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 02:36:00.234] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 02:36:00.294] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 02:36:00.353] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 02:36:00.786] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 02:36:01.466] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 02:51:33.445] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 02:51:33.509] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 02:51:33.569] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 02:51:33.967] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 02:51:34.898] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 04:40:38.482] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 04:40:38.608] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 04:40:38.699] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 04:40:39.297] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 04:40:40.746] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 07:11:13.787] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 07:11:13.894] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 07:11:13.959] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 07:11:14.322] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\OpenSimModel\Hamner_modified\Model\Hamner_modified.osim
+[2022-12-21 08:11:19.366] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\Models\Hamner_modified.osim
+[2022-12-21 08:11:19.434] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\Models\Hamner_modified.osim
+[2022-12-21 08:11:19.499] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\Models\Hamner_modified.osim
+[2022-12-21 08:11:19.878] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\Models\Hamner_modified.osim
+[2022-12-21 08:11:20.927] [info] Loaded model 3DGaitModelwithSimpleArms from file C:\Users\tom_v\MusculoskeletalSpecialization\Models\Hamner_modified.osim

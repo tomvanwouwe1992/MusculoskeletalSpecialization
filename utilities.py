@@ -1,6 +1,5 @@
 '''
-    This script contains helper functions used in this project. Not all
-    functions are still in use, but they might be in the future.
+    This script contains helper functions used in this project.
 '''
 
 # %% Import packages.
@@ -11,6 +10,526 @@ from scipy.interpolate import interp1d
 import casadi as ca
 import matplotlib.pyplot as plt
 import opensim
+import copy, os
+import muscleData
+
+def generate_full_gait_cycle_kinematics(path_results, joints, number_of_joints, number_of_mesh_intervals, finalTime_opt, Qs_opt, scaling_Q, rotational_joint_indices_in_joints, periodic_joints_indices_start_to_end_position_matching, periodic_opposite_joints_indices_in_joints):
+    Qs_opt_part_2 = np.zeros((number_of_joints, number_of_mesh_intervals))
+    Qs_opt_part_2[:, :] = Qs_opt[:, 1:]
+    Qs_opt_part_2[periodic_joints_indices_start_to_end_position_matching[1], :] = Qs_opt[
+                                                                                  periodic_joints_indices_start_to_end_position_matching[
+                                                                                      0], 1:]
+    Qs_opt_part_2[periodic_opposite_joints_indices_in_joints, :] = -Qs_opt[periodic_opposite_joints_indices_in_joints,
+                                                                    1:]
+    Qs_opt_part_2[joints.index('pelvis_tx'), :] = Qs_opt[joints.index('pelvis_tx'), 1:] + Qs_opt[
+        joints.index('pelvis_tx'), -1]
+    Qs_gait_cycle_opt = np.concatenate((Qs_opt, Qs_opt_part_2), 1)
+
+    labels = ['time'] + joints
+    tgrid_GC = tgrid = np.linspace(0, 2 * finalTime_opt[0], 2 * number_of_mesh_intervals + 1)
+    Qs_gait_cycle_nsc = (
+                Qs_gait_cycle_opt * (scaling_Q.to_numpy().T * np.ones((1, 2 * number_of_mesh_intervals + 1)))).T
+    Qs_gait_cycle_nsc[:, rotational_joint_indices_in_joints] = 180 / np.pi * Qs_gait_cycle_nsc[:,
+                                                                             rotational_joint_indices_in_joints]
+    data = np.concatenate((tgrid_GC, Qs_gait_cycle_nsc), axis=1)
+    from utilities import numpy2storage
+
+    numpy2storage(labels, data, os.path.join(path_results, 'motion.mot'))
+
+    return Qs_gait_cycle_opt, tgrid_GC, Qs_gait_cycle_nsc
+
+def get_results_opti(f_height, w_opt, number_of_muscles, number_of_mesh_intervals, polynomial_order, number_of_joints, number_of_non_muscle_actuated_joints, modelMass):
+    finalTime_opt = w_opt[0]
+    starti = 1
+    n_muscles = number_of_muscles
+    a_opt = (np.reshape(w_opt[starti:starti + n_muscles * (number_of_mesh_intervals + 1)],
+                        (number_of_mesh_intervals + 1, n_muscles))).T
+    starti = starti + n_muscles * (number_of_mesh_intervals + 1)
+
+    a_col_opt = (np.reshape(w_opt[starti:starti + n_muscles * (polynomial_order * number_of_mesh_intervals)],
+                            (polynomial_order * number_of_mesh_intervals, n_muscles))).T
+    starti = starti + n_muscles * (polynomial_order * number_of_mesh_intervals)
+
+    normF_opt = (np.reshape(w_opt[starti:starti + n_muscles * (number_of_mesh_intervals + 1)],
+                            (number_of_mesh_intervals + 1, n_muscles))).T
+    starti = starti + n_muscles * (number_of_mesh_intervals + 1)
+
+    normF_col_opt = (np.reshape(w_opt[starti:starti + n_muscles * (polynomial_order * number_of_mesh_intervals)],
+                                (polynomial_order * number_of_mesh_intervals, n_muscles))).T
+    starti = starti + n_muscles * (polynomial_order * number_of_mesh_intervals)
+
+    Qs_opt = (np.reshape(w_opt[starti:starti + number_of_joints * (number_of_mesh_intervals + 1)],
+                         (number_of_mesh_intervals + 1, number_of_joints))).T
+    starti = starti + number_of_joints * (number_of_mesh_intervals + 1)
+
+    Qs_col_opt = (np.reshape(w_opt[starti:starti + number_of_joints * (polynomial_order * number_of_mesh_intervals)],
+                             (polynomial_order * number_of_mesh_intervals, number_of_joints))).T
+    starti = starti + number_of_joints * (polynomial_order * number_of_mesh_intervals)
+
+    Qds_opt = (np.reshape(w_opt[starti:starti + number_of_joints * (number_of_mesh_intervals + 1)],
+                          (number_of_mesh_intervals + 1, number_of_joints))).T
+    starti = starti + number_of_joints * (number_of_mesh_intervals + 1)
+
+    Qds_col_opt = (np.reshape(w_opt[starti:starti + number_of_joints * (polynomial_order * number_of_mesh_intervals)],
+                              (polynomial_order * number_of_mesh_intervals, number_of_joints))).T
+    starti = starti + number_of_joints * (polynomial_order * number_of_mesh_intervals)
+
+    aArm_opt = (np.reshape(w_opt[starti:starti + number_of_non_muscle_actuated_joints * (number_of_mesh_intervals + 1)],
+                           (number_of_mesh_intervals + 1, number_of_non_muscle_actuated_joints))).T
+    starti = starti + number_of_non_muscle_actuated_joints * (number_of_mesh_intervals + 1)
+
+    aArm_col_opt = (np.reshape(
+        w_opt[starti:starti + number_of_non_muscle_actuated_joints * (polynomial_order * number_of_mesh_intervals)],
+        (polynomial_order * number_of_mesh_intervals, number_of_non_muscle_actuated_joints))).T
+    starti = starti + number_of_non_muscle_actuated_joints * (polynomial_order * number_of_mesh_intervals)
+
+    aDt_opt = (np.reshape(w_opt[starti:starti + n_muscles * number_of_mesh_intervals],
+                          (number_of_mesh_intervals, n_muscles))).T
+    starti = starti + n_muscles * number_of_mesh_intervals
+
+    eArm_opt = (np.reshape(w_opt[starti:starti + number_of_non_muscle_actuated_joints * number_of_mesh_intervals],
+                           (number_of_mesh_intervals, number_of_non_muscle_actuated_joints))).T
+    starti = starti + number_of_non_muscle_actuated_joints * number_of_mesh_intervals
+
+    normFDt_col_opt = (np.reshape(w_opt[starti:starti + n_muscles * (polynomial_order * number_of_mesh_intervals)],
+                                  (polynomial_order * number_of_mesh_intervals, n_muscles))).T
+    starti = starti + n_muscles * (polynomial_order * number_of_mesh_intervals)
+
+    Qdds_col_opt = (np.reshape(w_opt[starti:starti + number_of_joints * (polynomial_order * number_of_mesh_intervals)],
+                               (polynomial_order * number_of_mesh_intervals, number_of_joints))).T
+    starti = starti + number_of_joints * (polynomial_order * number_of_mesh_intervals)
+
+    scaling_vector_opt = (np.reshape(w_opt[starti:starti + 54 * (polynomial_order * number_of_mesh_intervals)],
+                                     (polynomial_order * number_of_mesh_intervals, 54))).T
+    starti = starti + 54 * (polynomial_order * number_of_mesh_intervals)
+
+    muscle_scaling_vector_opt = (np.reshape(w_opt[starti:starti + 92 * (polynomial_order * number_of_mesh_intervals)],
+                                            (polynomial_order * number_of_mesh_intervals, 92))).T
+    starti = starti + 92 * polynomial_order * number_of_mesh_intervals
+
+    model_mass_scaling_opt = (np.reshape(w_opt[starti:starti + 1 * (polynomial_order * number_of_mesh_intervals)],
+                                         (polynomial_order * number_of_mesh_intervals, 1))).T
+    starti = starti + 1 * polynomial_order * number_of_mesh_intervals
+
+    MTP_reserve_col_opt = (np.reshape(w_opt[starti:starti + 2 * (polynomial_order * number_of_mesh_intervals)],
+                                      (polynomial_order * number_of_mesh_intervals, 2))).T
+    starti = starti + 2 * (polynomial_order * number_of_mesh_intervals)
+
+    scaling_vector_opt = scaling_vector_opt[:, 0]
+    muscle_scaling_vector_opt = muscle_scaling_vector_opt[:, 0]
+    model_mass_scaling_opt = model_mass_scaling_opt[:, 0]
+    model_mass_opt = modelMass * model_mass_scaling_opt
+    model_height_opt = f_height(scaling_vector_opt)
+    model_BMI_opt = model_mass_opt / (model_height_opt * model_height_opt)
+    assert (starti == w_opt.shape[0]), "error when extracting results"
+
+    return a_opt, a_col_opt, normF_opt, normF_col_opt, Qs_opt, Qs_col_opt, Qds_opt, Qds_col_opt, aArm_opt, \
+           aArm_col_opt, aDt_opt, eArm_opt, normFDt_col_opt, Qdds_col_opt, MTP_reserve_col_opt, \
+           scaling_vector_opt, muscle_scaling_vector_opt, model_mass_scaling_opt, model_mass_opt, model_height_opt, \
+           model_BMI_opt, finalTime_opt
+
+
+def get_names_and_indices_of_joints_and_bodies(path_model, skeleton_scaling_bodies, bodies_skeleton_scaling_coupling):
+
+    muscles = get_muscle_names(path_model)
+    number_of_muscles = len(muscles)
+
+    joints = get_joint_names(path_model)
+    number_of_joints = len(joints)
+
+    muscle_actuated_joints = get_muscle_actuated_joint_names(path_model)
+
+    muscle_articulated_bodies = get_muscle_articulated_body_names(path_model)
+
+    muscle_actuated_joints_indices_in_joints = [joints.index(i) for i in muscle_actuated_joints]
+    number_of_muscle_actuated_joints = len(muscle_actuated_joints)
+    rotational_joints = copy.deepcopy(joints)
+    rotational_joints.remove('pelvis_tx')
+    rotational_joints.remove('pelvis_ty')
+    rotational_joints.remove('pelvis_tz')
+
+    rotational_joint_indices_in_joints = [joints.index(i) for i in rotational_joints]
+
+    non_actuated_joints = [x for x in joints if 'pelvis' in x]
+    non_actuated_joints_indices_in_joints = [joints.index(i) for i in non_actuated_joints]
+
+
+    non_muscle_actuated_joints = (list(set(joints) - set(muscle_actuated_joints) - set(non_actuated_joints)))
+    non_muscle_actuated_joints.sort()
+    non_muscle_actuated_joints_indices_in_joints = [joints.index(i) for i in non_muscle_actuated_joints]
+    number_of_non_muscle_actuated_joints = len(non_muscle_actuated_joints)
+
+    number_of_muscle_actuated_and_non_actuated_joints = number_of_joints - number_of_non_muscle_actuated_joints
+    muscle_actuated_and_non_actuated_joints_indices_in_joints = muscle_actuated_joints_indices_in_joints + non_actuated_joints_indices_in_joints
+
+    mtpJoints = ['mtp_angle_l', 'mtp_angle_r']
+
+    limit_torque_joints = muscleData.get_limit_torque_joints()
+    number_of_limit_torque_joints = len(limit_torque_joints)
+
+    periodic_opposite_joints = ['pelvis_list', 'pelvis_rotation', 'pelvis_tz',
+                              'lumbar_bending', 'lumbar_rotation']
+    periodic_opposite_joints_indices_in_joints = [joints.index(i) for i in periodic_opposite_joints]
+
+    periodic_joints = copy.deepcopy(joints)
+    for periodic_opposite_joint in periodic_opposite_joints:
+        periodic_joints.remove(periodic_opposite_joint)
+
+    periodic_joints_indices_start_to_end_velocity_matching = periodic_indices_start_to_end_matching(
+            periodic_joints, joints)
+
+    periodic_joints.remove('pelvis_tx')
+    periodic_joints_indices_start_to_end_position_matching = periodic_indices_start_to_end_matching(periodic_joints, joints)
+
+    periodic_muscles = copy.deepcopy(muscles)
+    periodic_muscles_indices_start_to_end_matching = periodic_indices_start_to_end_matching(periodic_muscles, muscles)
+
+    periodic_actuators = copy.deepcopy(non_muscle_actuated_joints)
+    periodic_actuators_indices_start_to_end_matching = periodic_indices_start_to_end_matching(periodic_actuators, non_muscle_actuated_joints)
+
+    muscle_articulated_bodies_indices_in_skeleton_scaling_bodies = [
+        [muscle_articulated_body in skeleton_scaling_body for skeleton_scaling_body in skeleton_scaling_bodies].index(
+            True) for muscle_articulated_body in muscle_articulated_bodies]
+    muscle_articulated_bodies_indices_in_skeleton_scaling_bodies = convert1Dto3Dindices(
+        muscle_articulated_bodies_indices_in_skeleton_scaling_bodies)
+
+    bodies_skeleton_scaling_coupling_indices = copy.deepcopy(bodies_skeleton_scaling_coupling)
+    for i in range(len(bodies_skeleton_scaling_coupling_indices)):
+        if type(bodies_skeleton_scaling_coupling_indices[i]) is list:
+            for j in range(len(bodies_skeleton_scaling_coupling_indices[i])):
+                bodies_skeleton_scaling_coupling_indices[i][j] = skeleton_scaling_bodies.index(
+                    bodies_skeleton_scaling_coupling[i][j])
+        else:
+            bodies_skeleton_scaling_coupling_indices[i] = skeleton_scaling_bodies.index(
+                bodies_skeleton_scaling_coupling[i])
+
+    return muscles, number_of_muscles, joints, number_of_joints, muscle_actuated_joints, muscle_articulated_bodies, \
+           muscle_actuated_joints_indices_in_joints, number_of_muscle_actuated_joints, rotational_joints, rotational_joint_indices_in_joints, \
+           non_actuated_joints, non_actuated_joints_indices_in_joints, non_muscle_actuated_joints, non_muscle_actuated_joints_indices_in_joints, \
+           number_of_non_muscle_actuated_joints, number_of_muscle_actuated_and_non_actuated_joints, muscle_actuated_and_non_actuated_joints_indices_in_joints, \
+           mtpJoints, limit_torque_joints, number_of_limit_torque_joints, periodic_opposite_joints, periodic_opposite_joints_indices_in_joints, \
+           periodic_joints, periodic_joints_indices_start_to_end_velocity_matching, periodic_joints_indices_start_to_end_position_matching, periodic_muscles,\
+           periodic_muscles_indices_start_to_end_matching, periodic_actuators, periodic_actuators_indices_start_to_end_matching, \
+           muscle_articulated_bodies_indices_in_skeleton_scaling_bodies, bodies_skeleton_scaling_coupling_indices
+
+
+
+def get_indices_external_function_outputs(map_external_function_outputs):
+    # The external function F outputs joint torques, ground reaction forces,
+    # ground reaction moments, and 3D positions of body origins. The order is
+    # given in the F_map dict.
+    # Origins calcaneus (2D).
+    idxCalcOr_r = [map_external_function_outputs['body_origins']['calcn_r'][0],
+                   map_external_function_outputs['body_origins']['calcn_r'][2]]
+    idxCalcOr_l = [map_external_function_outputs['body_origins']['calcn_l'][0],
+                   map_external_function_outputs['body_origins']['calcn_l'][2]]
+    # Origins femurs (2D).
+    idxFemurOr_r = [map_external_function_outputs['body_origins']['femur_r'][0],
+                    map_external_function_outputs['body_origins']['femur_r'][2]]
+    idxFemurOr_l = [map_external_function_outputs['body_origins']['femur_l'][0],
+                    map_external_function_outputs['body_origins']['femur_l'][2]]
+    # Origins hands (2D).
+    idxHandOr_r = [map_external_function_outputs['body_origins']['hand_r'][0],
+                   map_external_function_outputs['body_origins']['hand_r'][2]]
+    idxHandOr_l = [map_external_function_outputs['body_origins']['hand_l'][0],
+                   map_external_function_outputs['body_origins']['hand_l'][2]]
+    # Origins tibias (2D).
+    idxTibiaOr_r = [map_external_function_outputs['body_origins']['tibia_r'][0],
+                    map_external_function_outputs['body_origins']['tibia_r'][2]]
+    idxTibiaOr_l = [map_external_function_outputs['body_origins']['tibia_l'][0],
+                    map_external_function_outputs['body_origins']['tibia_l'][2]]
+    # Origins toes (2D).
+    idxToesOr_r = [map_external_function_outputs['body_origins']['toes_r'][0],
+                   map_external_function_outputs['body_origins']['toes_r'][2]]
+    idxToesOr_l = [map_external_function_outputs['body_origins']['toes_l'][0],
+                   map_external_function_outputs['body_origins']['toes_l'][2]]
+    # Origins toes (2D).
+    idxTorsoOr_r = [map_external_function_outputs['body_origins']['torso'][0],
+                    map_external_function_outputs['body_origins']['torso'][2]]
+    idxTorsoOr_l = [map_external_function_outputs['body_origins']['torso'][0],
+                    map_external_function_outputs['body_origins']['torso'][2]]
+    # Ground reaction forces (GRFs).
+    idxGRF_r = list(map_external_function_outputs['GRFs']['right'])
+    idxGRF_l = list(map_external_function_outputs['GRFs']['left'])
+    idxGRF = idxGRF_r + idxGRF_l
+    NGRF = len(idxGRF)
+    # Origins calcaneus (3D).
+    idxCalcOr3D_r = list(map_external_function_outputs['body_origins']['calcn_r'])
+    idxCalcOr3D_l = list(map_external_function_outputs['body_origins']['calcn_l'])
+    idxCalcOr3D = idxCalcOr3D_r + idxCalcOr3D_l
+    NCalcOr3D = len(idxCalcOr3D)
+    # Ground reaction moments (GRMs).
+    idxGRM_r = list(map_external_function_outputs['GRMs']['right'])
+    idxGRM_l = list(map_external_function_outputs['GRMs']['left'])
+    idxGRM = idxGRM_r + idxGRM_l
+
+    return idxCalcOr_r, idxCalcOr_l, idxFemurOr_r, idxFemurOr_l, idxHandOr_r, idxHandOr_l, idxTibiaOr_r, idxTibiaOr_l, idxToesOr_r, idxToesOr_l, idxTorsoOr_r, idxTorsoOr_l, idxGRF, idxGRM
+
+def get_skeletal_dynamics_outputs(map_external_function_outputs, f_linearPassiveTorque, f_linearPassiveMtpTorque, f_limit_torque, skeleton_dynamics_and_more, non_muscle_actuated_joints, joint_indices_in_external_function, number_of_joints, joints, mtpJoints, limit_torque_joints, polynomial_order, number_of_mesh_intervals, idxGRF, idxGRM, Qs_col_opt_nsc, Qds_col_opt_nsc, QsQds_col_opt_nsc, Qdds_col_opt_nsc, aArm_col_opt, MTP_reserve_col_opt, scaling_vector_opt, model_mass_opt, scalingArmA):
+    muscle_joint_torques_col_opt = np.zeros((number_of_joints, polynomial_order * number_of_mesh_intervals))
+
+
+    Tj_test = skeleton_dynamics_and_more(
+        ca.vertcat(QsQds_col_opt_nsc[:, 0], Qdds_col_opt_nsc[:, 0], scaling_vector_opt, model_mass_opt))
+    Tj_col_opt = np.zeros((Tj_test.shape[0], polynomial_order * number_of_mesh_intervals))
+
+    for i in range(polynomial_order * number_of_mesh_intervals):
+        Tj_col_opt[:, i] = np.reshape(skeleton_dynamics_and_more(
+            ca.vertcat(QsQds_col_opt_nsc[:, i], Qdds_col_opt_nsc[joint_indices_in_external_function, i],
+                       scaling_vector_opt, model_mass_opt)), (Tj_test.shape[0],))
+
+    GRF_col_opt = Tj_col_opt[idxGRF, :]
+    GRM_col_opt = Tj_col_opt[idxGRM, :]
+
+    generalized_forces_col_opt = np.zeros((number_of_joints, polynomial_order * number_of_mesh_intervals))
+    for i, joint in enumerate(joints):
+        index = map_external_function_outputs['residuals'][joint]
+        generalized_forces_col_opt[i, :] = Tj_col_opt[index, :]
+
+    # generalized forces (joint torques) are the result of passive joint torques, limit joint torques, biological joint torques (active contribution +  passive contribution)
+    passive_joint_torques_col_opt = np.zeros((number_of_joints, polynomial_order * number_of_mesh_intervals))
+    for joint in non_muscle_actuated_joints:
+        passive_joint_torques = f_linearPassiveTorque(Qs_col_opt_nsc[joints.index(joint), :],
+                                                      Qds_col_opt_nsc[joints.index(joint), :])
+        passive_joint_torques_col_opt[joints.index(joint), :] = np.reshape(passive_joint_torques, (
+        polynomial_order * number_of_mesh_intervals,))
+
+    for joint in mtpJoints:
+        passive_joint_torques = f_linearPassiveMtpTorque(Qs_col_opt_nsc[joints.index(joint), :],
+                                                         Qds_col_opt_nsc[joints.index(joint), :])
+        passive_joint_torques_col_opt[joints.index(joint), :] = np.reshape(passive_joint_torques, (
+        polynomial_order * number_of_mesh_intervals,))
+
+    limit_joint_torques_col_opt = np.zeros((number_of_joints, polynomial_order * number_of_mesh_intervals))
+    for joint in limit_torque_joints:
+        limit_joint_torques = f_limit_torque[joint](Qs_col_opt_nsc[joints.index(joint), :],
+                                                    Qds_col_opt_nsc[joints.index(joint), :])
+        limit_joint_torques_col_opt[joints.index(joint), :] = np.reshape(limit_joint_torques,
+                                                                         (polynomial_order * number_of_mesh_intervals,))
+
+    for i, joint in enumerate(non_muscle_actuated_joints):
+        index = joints.index(joint)
+        muscle_joint_torques_col_opt[index, :] = aArm_col_opt[i, :] * scalingArmA.iloc[0]['arm_rot_r']
+
+    for i, joint in enumerate(mtpJoints):
+        index = joints.index(joint)
+        muscle_joint_torques_col_opt[index, :] = MTP_reserve_col_opt[i, :]
+
+    joint_torques_equilibrium_residual_col_opt = np.zeros(
+        (number_of_joints, polynomial_order * number_of_mesh_intervals))
+    for joint in joints:
+        index = joints.index(joint)
+        joint_torques_equilibrium_residual_col_opt[index, :] = generalized_forces_col_opt[index, :] - (
+                    passive_joint_torques_col_opt[index, :] + limit_joint_torques_col_opt[index,
+                                                              :] + muscle_joint_torques_col_opt[index, :])
+
+    return Tj_col_opt, GRF_col_opt, GRM_col_opt, passive_joint_torques_col_opt, joint_torques_equilibrium_residual_col_opt, muscle_joint_torques_col_opt, limit_joint_torques_col_opt, passive_joint_torques_col_opt, generalized_forces_col_opt
+
+
+
+def get_biomechanics_outputs(f_metabolicsBhargava, f_get_muscle_tendon_length_velocity_moment_arm, f_hillEquilibrium, joints, number_of_joints, number_of_muscles, number_of_mesh_intervals, muscle_actuated_joints_indices_in_joints, number_of_muscle_actuated_joints, polynomial_order, scaling_vector_opt, Qsin_col_opt, Qdsin_col_opt, a_col_opt, normF_nsc_col_opt, normFDt_nsc_col_opt, muscle_articulated_bodies_indices_in_skeleton_scaling_bodies, muscle_scaling_vector_opt, model_mass_scaling_opt):
+    lMT_col_opt = np.zeros((number_of_muscles, polynomial_order * number_of_mesh_intervals))
+    vMT_col_opt = np.zeros((number_of_muscles, polynomial_order * number_of_mesh_intervals))
+    dM_col_opt = np.zeros(
+        (number_of_muscles, number_of_muscle_actuated_joints, polynomial_order * number_of_mesh_intervals))
+    muscle_active_joint_torques_col_opt = np.zeros((number_of_joints, polynomial_order * number_of_mesh_intervals))
+    muscle_passive_joint_torques_col_opt = np.zeros((number_of_joints, polynomial_order * number_of_mesh_intervals))
+    muscle_joint_torques_col_opt = np.zeros((number_of_joints, polynomial_order * number_of_mesh_intervals))
+    biological_joint_torques_equilibrium_residual_col_opt = np.zeros(
+        (number_of_joints, polynomial_order * number_of_mesh_intervals))
+    active_muscle_force_col_opt = np.zeros((number_of_muscles, polynomial_order * number_of_mesh_intervals))
+    passive_muscle_force_col_opt = np.zeros((number_of_muscles, polynomial_order * number_of_mesh_intervals))
+    hillEquilibrium_residual_col_opt = np.zeros((number_of_muscles, polynomial_order * number_of_mesh_intervals))
+    metabolicEnergyRate_col_opt = np.zeros((number_of_muscles, polynomial_order * number_of_mesh_intervals))
+
+    for i in range(polynomial_order * number_of_mesh_intervals):
+        NeMu_input_j = ca.vertcat(scaling_vector_opt[muscle_articulated_bodies_indices_in_skeleton_scaling_bodies],
+                                  Qsin_col_opt[:, i], Qdsin_col_opt[:, i])
+        [lMTj_lr, vMTj_lr, dMj] = f_get_muscle_tendon_length_velocity_moment_arm(NeMu_input_j)
+        lMT_col_opt[:, i] = np.reshape(lMTj_lr, (number_of_muscles,))
+        vMT_col_opt[:, i] = np.reshape(vMTj_lr, (number_of_muscles,))
+        dM_col_opt[:, :, i] = dMj
+
+        [hillEquilibriumj, Fj, activeFiberForcej, passiveFiberForcej,
+         normActiveFiberLengthForcej, normFiberLengthj, fiberVelocityj, activeFiberForce_effectivej,
+         passiveFiberForce_effectivej] = (
+            f_hillEquilibrium(a_col_opt[:, i], lMTj_lr, vMTj_lr,
+                              normF_nsc_col_opt[:, i], normFDt_nsc_col_opt[:, i], muscle_scaling_vector_opt,
+                              model_mass_scaling_opt))
+        active_muscle_force_col_opt[:, i] = np.reshape(activeFiberForce_effectivej, (number_of_muscles,))
+        passive_muscle_force_col_opt[:, i] = np.reshape(passiveFiberForce_effectivej, (number_of_muscles,))
+        hillEquilibrium_residual_col_opt[:, i] = np.reshape(hillEquilibriumj, (number_of_muscles,))
+
+        metabolicEnergyRate_col_opt[:, i] = np.reshape(f_metabolicsBhargava(
+            a_col_opt[:, i], a_col_opt[:, i], normFiberLengthj, fiberVelocityj,
+            activeFiberForcej, passiveFiberForcej,
+            normActiveFiberLengthForcej, muscle_scaling_vector_opt, model_mass_scaling_opt)[5], (number_of_muscles,))
+
+        for j in range(len(muscle_actuated_joints_indices_in_joints)):
+            joint = joints[muscle_actuated_joints_indices_in_joints[j]]
+            if joint != 'mtp_angle_l' and joint != 'mtp_angle_r':
+                muscle_active_joint_torques_col_opt[joints.index(joint), i] = ca.sum1(
+                    dMj[:, j] * activeFiberForce_effectivej)
+                muscle_passive_joint_torques_col_opt[joints.index(joint), i] = ca.sum1(
+                    dMj[:, j] * passiveFiberForce_effectivej)
+                muscle_joint_torques_col_opt[joints.index(joint), i] = ca.sum1(dMj[:, j] * Fj)
+        biological_joint_torques_equilibrium_residual_col_opt[:, i] = muscle_joint_torques_col_opt[:, i] - (
+                    muscle_passive_joint_torques_col_opt[:, i] + muscle_active_joint_torques_col_opt[:, i])
+
+
+    return lMT_col_opt, vMT_col_opt, dM_col_opt, muscle_active_joint_torques_col_opt, muscle_passive_joint_torques_col_opt, muscle_joint_torques_col_opt, biological_joint_torques_equilibrium_residual_col_opt, active_muscle_force_col_opt, passive_muscle_force_col_opt, hillEquilibrium_residual_col_opt, metabolicEnergyRate_col_opt
+
+def get_max_iso_torques(f_get_muscle_tendon_length_velocity_moment_arm, f_hillEquilibrium, joints, number_of_muscles, muscle_actuated_joints, muscle_actuated_joints_indices_in_joints, muscle_articulated_bodies_indices_in_skeleton_scaling_bodies, muscle_scaling_vector_opt, scaling_vector_opt, model_mass_scaling_opt):
+    # Evaluate maximal isometric torques
+
+    max_iso_torques_joints = ['hip_flexion_l', 'hip_flexion_l', 'knee_angle_l', 'knee_angle_l', 'ankle_angle_l',
+                              'ankle_angle_l']
+    max_iso_torques_sign = [1, -1, 1, -1, 1, -1]
+
+    # We evaluate for every max iso torque of interest (6) across 20 positions.
+    Qs_max_iso_torque = np.zeros((len(joints), 20, 6))
+
+    Qs_max_iso_torque[joints.index('hip_flexion_l'), :, 0] = np.linspace(-45, 90, num=20)
+    Qs_max_iso_torque[joints.index('knee_angle_l'), :, 0] = np.linspace(-30, -30, num=20)
+
+    Qs_max_iso_torque[joints.index('hip_flexion_l'), :, 1] = np.linspace(-45, 90, num=20)
+    Qs_max_iso_torque[joints.index('knee_angle_l'), :, 1] = np.linspace(-30, -30, num=20)
+
+    Qs_max_iso_torque[joints.index('hip_flexion_l'), :, 2] = np.linspace(45, 45, num=20)
+    Qs_max_iso_torque[joints.index('knee_angle_l'), :, 2] = np.linspace(-120, 0, num=20)
+
+    Qs_max_iso_torque[joints.index('hip_flexion_l'), :, 3] = np.linspace(45, 45, num=20)
+    Qs_max_iso_torque[joints.index('knee_angle_l'), :, 3] = np.linspace(-120, 0, num=20)
+
+    Qs_max_iso_torque[joints.index('knee_angle_l'), :, 4] = np.linspace(45, 45, num=20)
+    Qs_max_iso_torque[joints.index('ankle_angle_l'), :, 4] = np.linspace(-30, 10, num=20)
+
+    Qs_max_iso_torque[joints.index('knee_angle_l'), :, 5] = np.linspace(45, 45, num=20)
+    Qs_max_iso_torque[joints.index('ankle_angle_l'), :, 5] = np.linspace(-30, 10, num=20)
+
+    Qs_max_iso_torque = Qs_max_iso_torque * np.pi / 180
+
+    maximal_isometric_torques = np.zeros((20, 6))
+    passive_isometric_torques = np.zeros((20, 6))
+    for j in range(len(max_iso_torques_joints)):
+        for k in range(20):
+            # Compute muscle-tendon length in default pose (all zeros) for scaled model (scaling factors are the optimization variables)
+            Q_max_iso_torque = Qs_max_iso_torque[:, k, j]
+            # isometric: speeds are zero
+            Qd_max_iso_torque = np.zeros((len(joints), 1))
+
+            Qsinj = Q_max_iso_torque[muscle_actuated_joints_indices_in_joints]
+            Qdsinj = Qd_max_iso_torque[muscle_actuated_joints_indices_in_joints]
+            NeMu_input = ca.vertcat(
+                scaling_vector_opt[muscle_articulated_bodies_indices_in_skeleton_scaling_bodies], Qsinj, Qdsinj)
+            [lMT_max_iso_torque, vMT_max_iso_torque,
+             dM_max_iso_torque] = f_get_muscle_tendon_length_velocity_moment_arm(NeMu_input)
+
+            from utilities import solve_with_bounds
+
+            opti_maxIso = ca.Opti()
+            a_max_iso_torque = opti_maxIso.variable(number_of_muscles, 1)
+            opti_maxIso.subject_to(opti_maxIso.bounded(0, a_max_iso_torque, 1))
+            F_max_iso_torque = opti_maxIso.variable(number_of_muscles, 1)
+            opti_maxIso.subject_to(opti_maxIso.bounded(0, F_max_iso_torque, 10000))
+
+            [hillEquilibrium_neutral, Ft_neutral, activeFiberForce_neutral,
+             passiveFiberForce_neutral, normActiveFiberLengthForce_neutral,
+             normFiberLength_neutral, fiberVelocity_neutral, _, passiveEffectiveFiberForce_neutral] = (
+                f_hillEquilibrium(a_max_iso_torque, lMT_max_iso_torque, vMT_max_iso_torque,
+                                  F_max_iso_torque, np.zeros((number_of_muscles, 1)), muscle_scaling_vector_opt,
+                                  model_mass_scaling_opt))
+
+            opti_maxIso.subject_to(hillEquilibrium_neutral == 0)
+            joint_maximized = max_iso_torques_joints[j]
+            i = muscle_actuated_joints.index(joint_maximized)
+            tau = ca.sum1(dM_max_iso_torque[:, i] * Ft_neutral)
+            opti_maxIso.minimize(max_iso_torques_sign[j] * tau + 0.0001 * ca.sumsqr(a_max_iso_torque))
+            w_maxIso, stats = solve_with_bounds(opti_maxIso, 1e-4)
+            a_max_iso_torque = w_maxIso[:92]
+            F_max_iso_torque = w_maxIso[92:]
+            [hillEquilibrium_neutral, Ft_neutral, activeFiberForce_neutral,
+             passiveFiberForce_neutral, normActiveFiberLengthForce_neutral,
+             normFiberLength_neutral, fiberVelocity_neutral, _, passiveEffectiveFiberForce_neutral] = (
+                f_hillEquilibrium(a_max_iso_torque, lMT_max_iso_torque, vMT_max_iso_torque,
+                                  F_max_iso_torque, np.zeros((number_of_muscles, 1)), muscle_scaling_vector_opt,
+                                  model_mass_scaling_opt))
+            maximal_isometric_torques[k, j] = ca.sum1(dM_max_iso_torque[:, i] * Ft_neutral)
+            passive_isometric_torques[k, j] = ca.sum1(dM_max_iso_torque[:, i] * passiveEffectiveFiberForce_neutral)
+    return Qs_max_iso_torque, maximal_isometric_torques, passive_isometric_torques, max_iso_torques_joints
+
+def get_time_col_opt(finalTime_opt, number_of_mesh_intervals, polynomial_order):
+    tau = ca.collocation_points(polynomial_order, 'radau')
+    time_col_opt = np.zeros((1, polynomial_order * number_of_mesh_intervals))
+    index = 0
+    previous_time = 0
+    h_opt = finalTime_opt / number_of_mesh_intervals
+    for i in range(number_of_mesh_intervals):
+        time_col_opt[0, index] = previous_time + tau[0] * h_opt
+        time_col_opt[0, index + 1] = previous_time + tau[1] * h_opt
+        time_col_opt[0, index + 2] = previous_time + tau[2] * h_opt
+        previous_time = time_col_opt[0, index + 2]
+        index = index + 3
+    time_col_opt = np.reshape(time_col_opt, (polynomial_order * number_of_mesh_intervals,))
+    return time_col_opt
+
+
+
+def get_metabolic_energy_outcomes(metabolicEnergyRate_col_opt, time_col_opt, halfGC_length, model_mass_opt):
+    basal_coef = 1.2
+    basal_exp = 1
+    basal_metabolic_rate_opt = basal_coef * model_mass_opt ** basal_exp
+
+    basal_metabolic_energy_halfGC_opt = np.trapz(
+        basal_metabolic_rate_opt * np.ones((len(time_col_opt),)), time_col_opt)
+    absolute_muscle_metabolic_energy_halfGC_opt = np.trapz(np.sum(metabolicEnergyRate_col_opt, 0), time_col_opt)
+    relative_muscle_metabolic_energy_halfGC_opt = absolute_muscle_metabolic_energy_halfGC_opt / model_mass_opt
+
+    marathon_muscle_metabolic_energy_joule_opt = absolute_muscle_metabolic_energy_halfGC_opt * (42196 / halfGC_length)
+    marathon_muscle_metabolic_energy_cal_opt = marathon_muscle_metabolic_energy_joule_opt / 4.183
+    marathon_muscle_metabolic_energy_kcal_opt = marathon_muscle_metabolic_energy_joule_opt / 4183
+
+    marathon_basal_metabolic_energy_joule_opt = basal_metabolic_energy_halfGC_opt * (42196 / halfGC_length)
+    marathon_basal_metabolic_energy_cal_opt = marathon_basal_metabolic_energy_joule_opt / 4.183
+    marathon_basal_metabolic_energy_kcal_opt = marathon_basal_metabolic_energy_joule_opt / 4183
+
+    marathon_total_metabolic_energy_joule_opt = marathon_basal_metabolic_energy_joule_opt + marathon_muscle_metabolic_energy_joule_opt
+    marathon_total_metabolic_energy_cal_opt = marathon_basal_metabolic_energy_cal_opt + marathon_muscle_metabolic_energy_cal_opt
+    marathon_total_metabolic_energy_kcal_opt = marathon_basal_metabolic_energy_kcal_opt + marathon_muscle_metabolic_energy_kcal_opt
+
+    marathon_total_metabolic_energy_perKG_joule_opt = marathon_total_metabolic_energy_joule_opt / model_mass_opt
+    marathon_total_metabolic_energy_perKG_cal_opt = marathon_total_metabolic_energy_cal_opt / model_mass_opt
+    marathon_total_metabolic_energy_perKG_kcal_opt = marathon_total_metabolic_energy_kcal_opt / model_mass_opt
+
+    metabolic_energy_outcomes = {}
+
+    metabolic_energy_outcomes['basal_metabolic_energy_halfGC_opt'] = basal_metabolic_energy_halfGC_opt
+    metabolic_energy_outcomes[
+        'absolute_muscle_metabolic_energy_halfGC_opt'] = absolute_muscle_metabolic_energy_halfGC_opt
+    metabolic_energy_outcomes[
+        'relative_muscle_metabolic_energy_halfGC_opt'] = relative_muscle_metabolic_energy_halfGC_opt
+
+    metabolic_energy_outcomes['marathon_muscle_metabolic_energy_joule_opt'] = marathon_muscle_metabolic_energy_joule_opt
+    metabolic_energy_outcomes['marathon_muscle_metabolic_energy_cal_opt'] = marathon_muscle_metabolic_energy_cal_opt
+    metabolic_energy_outcomes['marathon_muscle_metabolic_energy_kcal_opt'] = marathon_muscle_metabolic_energy_kcal_opt
+
+    metabolic_energy_outcomes['marathon_basal_metabolic_energy_joule_opt'] = marathon_basal_metabolic_energy_joule_opt
+    metabolic_energy_outcomes['marathon_basal_metabolic_energy_cal_opt'] = marathon_basal_metabolic_energy_cal_opt
+    metabolic_energy_outcomes['marathon_basal_metabolic_energy_kcal_opt'] = marathon_basal_metabolic_energy_kcal_opt
+
+    metabolic_energy_outcomes['marathon_total_metabolic_energy_joule_opt'] = marathon_total_metabolic_energy_joule_opt
+    metabolic_energy_outcomes['marathon_total_metabolic_energy_cal_opt'] = marathon_total_metabolic_energy_cal_opt
+    metabolic_energy_outcomes['marathon_total_metabolic_energy_kcal_opt'] = marathon_total_metabolic_energy_kcal_opt
+
+    metabolic_energy_outcomes[
+        'marathon_total_metabolic_energy_perKG_joule_opt'] = marathon_total_metabolic_energy_perKG_joule_opt
+    metabolic_energy_outcomes[
+        'marathon_total_metabolic_energy_perKG_cal_opt'] = marathon_total_metabolic_energy_perKG_cal_opt
+    metabolic_energy_outcomes[
+        'marathon_total_metabolic_energy_perKG_kcal_opt'] = marathon_total_metabolic_energy_perKG_kcal_opt
+
+    return metabolic_energy_outcomes
+
 
 def convert1Dto3Dindices(muscle_articulated_bodies_indices_in_skeleton_scaling_bodies):
     muscle_articulated_bodies_indices_in_skeleton_scaling_bodies_new = []
