@@ -111,6 +111,10 @@ def get_results_opti(f_height, w_opt, number_of_muscles, number_of_mesh_interval
                                          (polynomial_order * number_of_mesh_intervals, 1))).T
     starti = starti + 1 * polynomial_order * number_of_mesh_intervals
 
+    muscle_cross_section_multiplier_opt = (np.reshape(w_opt[starti:starti + 92 * (polynomial_order * number_of_mesh_intervals)],
+                                            (polynomial_order * number_of_mesh_intervals, 92))).T
+    starti = starti + 92 * polynomial_order * number_of_mesh_intervals
+
     MTP_reserve_col_opt = (np.reshape(w_opt[starti:starti + 2 * (polynomial_order * number_of_mesh_intervals)],
                                       (polynomial_order * number_of_mesh_intervals, 2))).T
     starti = starti + 2 * (polynomial_order * number_of_mesh_intervals)
@@ -118,6 +122,7 @@ def get_results_opti(f_height, w_opt, number_of_muscles, number_of_mesh_interval
     scaling_vector_opt = scaling_vector_opt[:, 0]
     muscle_scaling_vector_opt = muscle_scaling_vector_opt[:, 0]
     model_mass_scaling_opt = model_mass_scaling_opt[:, 0]
+    muscle_cross_section_multiplier_opt = muscle_cross_section_multiplier_opt[:,0]
     model_mass_opt = modelMass * model_mass_scaling_opt
     model_height_opt = f_height(scaling_vector_opt)
     model_BMI_opt = model_mass_opt / (model_height_opt * model_height_opt)
@@ -126,7 +131,7 @@ def get_results_opti(f_height, w_opt, number_of_muscles, number_of_mesh_interval
     return a_opt, a_col_opt, normF_opt, normF_col_opt, Qs_opt, Qs_col_opt, Qds_opt, Qds_col_opt, aArm_opt, \
            aArm_col_opt, aDt_opt, eArm_opt, normFDt_col_opt, Qdds_col_opt, MTP_reserve_col_opt, \
            scaling_vector_opt, muscle_scaling_vector_opt, model_mass_scaling_opt, model_mass_opt, model_height_opt, \
-           model_BMI_opt, finalTime_opt
+           model_BMI_opt, finalTime_opt, muscle_cross_section_multiplier_opt
 
 
 def get_names_and_indices_of_joints_and_bodies(path_model, skeleton_scaling_bodies, bodies_skeleton_scaling_coupling):

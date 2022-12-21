@@ -9,10 +9,10 @@ loadResults = True  # Set True to load the results of the optimization.
 writeMotionFiles = True  # Set True to write motion files for use in OpenSim GUI
 saveOptimalTrajectories = True  # Set True to save optimal trajectories
 plotResults = False
-set_guess_from_solution = True
+set_guess_from_solution = False
 
 # Select the case(s) for which you want to solve the associated problem(s)
-cases = [str(i) for i in range(1, 7)]
+cases = [str(i) for i in range(3, 7)]
 settings = settings.getSettings()
 
 for case in cases:
@@ -32,7 +32,10 @@ for case in cases:
 
     ### Settings.
     polynomial_order = 3  # default interpolating polynomial order.
-    number_of_parallel_threads = 10  # default number of threads.
+    number_of_parallel_threads = 8  # default number of threads.
+
+    if 'strength_training' in settings[case]:
+        strength_training = settings[case]['strength_training']
 
     if 'bounds_scaling_factors' in settings[case]:
         bounds_skeleton_scaling_factors = settings[case]['bounds_scaling_factors']
@@ -125,8 +128,8 @@ for case in cases:
     deactivationTimeConstant = 0.06
 
     ### Dynamics
-    f_hillEquilibrium = casadiFunctions.hillEquilibrium_muscle_length_scaling(muscle_parameters, tendon_stiffness,
-                                                                              specific_tension)
+    f_hillEquilibrium = casadiFunctions.hillEquilibrium(muscle_parameters, tendon_stiffness,
+                                                        specific_tension)
     f_actuatorDynamics = casadiFunctions.armActivationDynamics(number_of_non_muscle_actuated_joints)
 
     if enforce_target_speed and target_speed < 5:
@@ -152,7 +155,7 @@ for case in cases:
     optimalFiberLength = muscle_parameters[1, :]
     slow_twitch_ratio = muscleData.slowTwitchRatio(muscles)
     smoothingConstant = 10
-    f_metabolicsBhargava = casadiFunctions.metabolicsBhargava_muscle_length_scaling(
+    f_metabolicsBhargava = casadiFunctions.metabolicsBhargava(
         slow_twitch_ratio, maximalIsometricForce, optimalFiberLength, specific_tension, smoothingConstant)
 
     ### Model height and scaling of total body mass
@@ -419,6 +422,14 @@ for case in cases:
             opti.subject_to(
                 opti.bounded(17.5, BMI_opti, 25.5))
 
+        if strength_training == True:
+            print('do nothing')
+        else:
+            muscle_cross_section_multiplier_opti = opti.variable(number_of_muscles, polynomial_order * number_of_mesh_intervals)
+            opti.subject_to(
+                opti.bounded(1, muscle_cross_section_multiplier_opti, 1))
+            opti.set_initial(muscle_cross_section_multiplier_opti, 1)
+
         # Additional controls to drive the mtp joint
         MTP_reserve_col = opti.variable(2, polynomial_order * number_of_mesh_intervals)
         if enforce_target_speed and target_speed < 5:
@@ -490,6 +501,7 @@ for case in cases:
         scaling_vector_j = ca.MX.sym('scaling_vector', (len(muscle_articulated_bodies) + 6) * 3, polynomial_order)
         muscle_length_scaling_vector_j = ca.MX.sym('muscle_scaling_vector', number_of_muscles, polynomial_order)
         model_mass_scaling_j = ca.MX.sym('model_mass_scaling_vector', 1, polynomial_order)
+        muscle_cross_section_multiplier_j = ca.MX.sym('muscle_cross_section_multiplier', number_of_muscles, polynomial_order)
         # MTP actuation controls
         MTP_reserve_j = ca.MX.sym('MTP_reserve_j', 2, polynomial_order)
 
@@ -543,12 +555,12 @@ for case in cases:
              normActiveFiberLengthForcej, normFiberLengthj, fiberVelocityj,_,_] = (
                 f_hillEquilibrium(akj[:, j + 1], lMTj_lr, vMTj_lr,
                                                    normFkj_nsc[:, j + 1], normFDtj_nsc[:, j], muscle_length_scaling_vector_j[:,j],
-                                                   model_mass_scaling_j[:,j]))
+                                                   model_mass_scaling_j[:,j], muscle_cross_section_multiplier_j[:,j]))
 
             metabolicEnergyRatej = f_metabolicsBhargava(
                 akj[:, j + 1], akj[:, j + 1], normFiberLengthj, fiberVelocityj,
                 activeFiberForcej, passiveFiberForcej,
-                normActiveFiberLengthForcej, muscle_length_scaling_vector_j[:,j], model_mass_scaling_j[:,j])[5]
+                normActiveFiberLengthForcej, muscle_length_scaling_vector_j[:,j], model_mass_scaling_j[:,j], muscle_cross_section_multiplier_j[:,j])[5]
 
             passiveTorque_j = {}
             passiveTorquesj = ca.MX(number_of_limit_torque_joints, 1)
@@ -609,8 +621,6 @@ for case in cases:
             aArmDtj = f_actuatorDynamics(eArmk, aArmkj[:, j + 1])
             eq_constr.append(h * aArmDtj - aArmp)
 
-
-
             # Path constraint implicit activation dynamics
             act1 = aDtk_nsc + akj[:, j + 1] / deactivationTimeConstant
             act2 = aDtk_nsc + akj[:, j + 1] / activationTimeConstant
@@ -632,7 +642,6 @@ for case in cases:
                     diffTj_joint = f_diffTorques(
                         Tj[map_external_function_outputs['residuals'][joint]], mTj_joint, passiveTorque_j[joint])
                     eq_constr.append(diffTj_joint)
-
 
             # Torque + passive torque equals inverse dynamics torque
             for cj, joint in enumerate(non_muscle_actuated_joints):
@@ -679,8 +688,9 @@ for case in cases:
         ineq_constr6 = ca.vertcat(*ineq_constr6)
 
         f_coll_map = ca.Function('f_coll',
-                                 [tf, scaling_vector_j, muscle_length_scaling_vector_j,
-                                  model_mass_scaling_j,
+                                 [tf,
+                                  scaling_vector_j, muscle_length_scaling_vector_j,
+                                  model_mass_scaling_j, muscle_cross_section_multiplier_j,
                                   ak, aj, normFk, normFj, Qsk,
                                   Qsj, Qdsk, Qdsj, aArmk, aArmj,
                                   aDtk, eArmk, normFDtj, Qddsj, MTP_reserve_j],
@@ -692,7 +702,9 @@ for case in cases:
         (coll_eq_constr, coll_ineq_constr1, coll_ineq_constr2,
          coll_ineq_constr3, coll_ineq_constr4, coll_ineq_constr5,
          coll_ineq_constr6, Jall) = f_coll_map(
-            finalTime, scaling_vector_opti, muscle_length_scaling_vector_opti, model_mass_scaling_opti,
+            finalTime,
+            scaling_vector_opti, muscle_length_scaling_vector_opti,
+            model_mass_scaling_opti, muscle_cross_section_multiplier_opti,
             a[:, :-1], a_col, normF[:, :-1], normF_col,
             Qs[:, :-1], Qs_col, Qds[:, :-1], Qds_col,
             aArm[:, :-1], aArm_col, aDt, eArm, normFDt_col, Qdds_col, MTP_reserve_col)
@@ -752,7 +764,7 @@ for case in cases:
         ## Solve
         from utilities import solve_with_bounds, solve_with_constraints
         file_path = os.path.join(path_results, 'mydiary.txt')
-        # sys.stdout = open(file_path, "w")
+        sys.stdout = open(file_path, "w")
         w_opt, stats = solve_with_bounds(opti, convergence_tolerance_IPOPT)
 
         ## Save results.
@@ -776,7 +788,7 @@ for case in cases:
         a_opt, a_col_opt, normF_opt, normF_col_opt, Qs_opt, Qs_col_opt, Qds_opt, Qds_col_opt, aArm_opt, \
         aArm_col_opt, aDt_opt, eArm_opt, normFDt_col_opt, Qdds_col_opt, MTP_reserve_col_opt, \
         scaling_vector_opt, muscle_scaling_vector_opt, model_mass_scaling_opt, model_mass_opt, model_height_opt, \
-        model_BMI_opt, finalTime_opt = utilities.get_results_opti(f_height, w_opt, number_of_muscles, number_of_mesh_intervals, polynomial_order, number_of_joints, number_of_non_muscle_actuated_joints, modelMass)
+        model_BMI_opt, finalTime_opt, muscle_cross_section_multiplier_opt = utilities.get_results_opti(f_height, w_opt, number_of_muscles, number_of_mesh_intervals, polynomial_order, number_of_joints, number_of_non_muscle_actuated_joints, modelMass)
 
         # Generate motion file for full gait cycle
         Qs_gait_cycle_opt, tgrid_GC, Qs_gait_cycle_nsc = utilities.generate_full_gait_cycle_kinematics(path_results, joints, number_of_joints, number_of_mesh_intervals, finalTime_opt, Qs_opt, scaling_Q, rotational_joint_indices_in_joints, periodic_joints_indices_start_to_end_position_matching, periodic_opposite_joints_indices_in_joints)
@@ -823,6 +835,7 @@ for case in cases:
             optimaltrajectories = optimaltrajectories.item()
 
         optimaltrajectories[case] = {
+                'muscle_cross_section_multiplier_opt': muscle_cross_section_multiplier_opt,
                 'speed': speed,
                 'height': model_height_opt,
                 'mass': model_mass_opt,

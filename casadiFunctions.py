@@ -7,43 +7,6 @@
 import casadi as ca
 import numpy as np
 
-# %% CasADi function to approximate muscle-tendon lenghts, velocities,
-# and moment arms based on joint positions and velocities.
-def polynomialApproximation(musclesPolynomials, polynomialData, NPolynomial):    
-    
-    from polynomials import polynomials
-    
-    # Function variables.
-    qin = ca.SX.sym('qin', 1, NPolynomial)
-    qdotin  = ca.SX.sym('qdotin', 1, NPolynomial)
-    lMT = ca.SX(len(musclesPolynomials), 1)
-    vMT = ca.SX(len(musclesPolynomials), 1)
-    dM = ca.SX(len(musclesPolynomials), NPolynomial)
-    
-    for count, musclePolynomials in enumerate(musclesPolynomials):
-        
-        coefficients = polynomialData[musclePolynomials]['coefficients']
-        dimension = polynomialData[musclePolynomials]['dimension']
-        order = polynomialData[musclePolynomials]['order']        
-        spanning = polynomialData[musclePolynomials]['spanning']          
-        
-        polynomial = polynomials(coefficients, dimension, order)
-        
-        idxSpanning = [i for i, e in enumerate(spanning) if e == 1]        
-        lMT[count] = polynomial.calcValue(qin[0, idxSpanning])
-        
-        dM[count, :] = 0
-        vMT[count] = 0        
-        for i in range(len(idxSpanning)):
-            dM[count, idxSpanning[i]] = - polynomial.calcDerivative(
-                    qin[0, idxSpanning], i)
-            vMT[count] += (-dM[count, idxSpanning[i]] * 
-               qdotin[0, idxSpanning[i]])
-        
-    f_polynomial = ca.Function('f_polynomial',[qin, qdotin],[lMT, vMT, dM])
-    
-    return f_polynomial
-
 def muscle_length_scaling_vector(muscle_actuated_joints, f_NeMu):
     # The optimal fiber length and tendon slack length ('muscle length parameters') depend on the skeletal scaling.
     # This means that when the skeleton scaling variables are optimized, the scaling of the optimal fiber length
@@ -71,55 +34,6 @@ def muscle_length_scaling_vector(muscle_actuated_joints, f_NeMu):
 
     return f_muscle_length_scaling_vector
 
-# %% CasADi function to derive the Hill equilibrium.
-def hillEquilibrium(mtParameters, tendonCompliance, specificTension):
-    
-    from muscleModels import DeGrooteFregly2016MuscleModel
-    
-    NMuscles = mtParameters.shape[1]
-    
-    # Function variables.
-    activation = ca.SX.sym('activation', NMuscles)
-    mtLength = ca.SX.sym('mtLength', NMuscles)
-    mtVelocity = ca.SX.sym('mtVelocity', NMuscles)
-    normTendonForce = ca.SX.sym('normTendonForce', NMuscles)
-    normTendonForceDT = ca.SX.sym('normTendonForceDT', NMuscles)
-     
-    hillEquilibrium = ca.SX(NMuscles, 1)
-    tendonForce = ca.SX(NMuscles, 1)
-    activeFiberForce = ca.SX(NMuscles, 1)
-    normActiveFiberLengthForce = ca.SX(NMuscles, 1)
-    passiveFiberForce = ca.SX(NMuscles, 1)
-    activeFiberForce_effective = ca.SX(NMuscles, 1)
-    passiveFiberForce_effective = ca.SX(NMuscles, 1)
-    normFiberLength = ca.SX(NMuscles, 1)
-    fiberVelocity = ca.SX(NMuscles, 1)    
-    
-    for m in range(NMuscles):    
-        muscle = DeGrooteFregly2016MuscleModel(
-            mtParameters[:, m], activation[m], mtLength[m], mtVelocity[m], 
-            normTendonForce[m], normTendonForceDT[m], tendonCompliance[:, m],
-            specificTension[:, m])
-        
-        hillEquilibrium[m] = muscle.deriveHillEquilibrium()
-        tendonForce[m] = muscle.getTendonForce()
-        activeFiberForce[m] = muscle.getActiveFiberForce()[0]
-        passiveFiberForce[m] = muscle.getPassiveFiberForce()[0]
-        activeFiberForce_effective[m] = muscle.getActiveFiberForce()[0] * muscle.cosPennationAngle
-        passiveFiberForce_effective[m] = muscle.getPassiveFiberForce()[0] * muscle.cosPennationAngle
-        normActiveFiberLengthForce[m] = muscle.getActiveFiberLengthForce()
-        normFiberLength[m] = muscle.getFiberLength()[1]
-        fiberVelocity[m] = muscle.getFiberVelocity()[0]
-        
-    f_hillEquilibrium = ca.Function('f_hillEquilibrium',
-                                    [activation, mtLength, mtVelocity, 
-                                     normTendonForce, normTendonForceDT], 
-                                     [hillEquilibrium, tendonForce,
-                                      activeFiberForce, passiveFiberForce,
-                                      normActiveFiberLengthForce,
-                                      normFiberLength, fiberVelocity, activeFiberForce_effective, passiveFiberForce_effective])
-    
-    return f_hillEquilibrium
 
 def mass_scaling_with_skeleton_volume(joints, F_skeleton_scaling):
     # This scaling factor to scale up muscle mass and force in the metabolic energy model (and the hillEquilibrium dynamics)
@@ -145,7 +59,7 @@ def get_height(joints, F_skeleton_scaling):
                                                  [height_MX])
     return f_height
 
-def hillEquilibrium_muscle_length_scaling(mtParameters, tendonCompliance, specific_tension):
+def hillEquilibrium(mtParameters, tendonCompliance, specific_tension):
     from muscleModels import DeGrooteFregly2016MuscleModel
 
     NMuscles = mtParameters.shape[1]
@@ -159,10 +73,11 @@ def hillEquilibrium_muscle_length_scaling(mtParameters, tendonCompliance, specif
     normTendonForce = ca.SX.sym('normTendonForce', NMuscles)
     normTendonForceDT = ca.SX.sym('normTendonForceDT', NMuscles)
     mtParameters_SX = ca.SX.sym('scaling_vector', 5, NMuscles)
-    model_mass_scaling = ca.SX.sym('model_mass_scaling', 1, 1)
+    model_mass_scaling_SX = ca.SX.sym('model_mass_scaling', 1, 1)
+    muscle_cross_section_multiplier_SX = ca.SX.sym(' muscle_cross_section_multiplier', NMuscles)
 
     muscleVolume_original = (mtParameters[0, :] / (1e6 * specific_tension) * mtParameters[1, :]).T
-    muscleVolume_scaled = model_mass_scaling * muscleVolume_original
+    muscleVolume_scaled = model_mass_scaling_SX * muscleVolume_original * muscle_cross_section_multiplier_SX
     optimalFiberLength_scaled = (muscle_length_scaling_SX * mtParameters[1, :]).T
     tendonSlackLength_scaled = (muscle_length_scaling_SX * mtParameters[2, :]).T
     maximalIsometricForce_scaled = muscleVolume_scaled.T / optimalFiberLength_scaled * (1e6 * specific_tension)
@@ -203,7 +118,8 @@ def hillEquilibrium_muscle_length_scaling(mtParameters, tendonCompliance, specif
 
     f_hillEquilibrium = ca.Function('f_hillEquilibrium_skeleton_scaling',
                                     [activation, mtLength, mtVelocity,
-                                     normTendonForce, normTendonForceDT, muscle_length_scaling_SX, model_mass_scaling],
+                                     normTendonForce, normTendonForceDT,
+                                     muscle_length_scaling_SX, model_mass_scaling_SX, muscle_cross_section_multiplier_SX],
                                     [hillEquilibrium, tendonForce,
                                      activeFiberForce, passiveFiberForce,
                                      normActiveFiberLengthForce,
@@ -211,8 +127,6 @@ def hillEquilibrium_muscle_length_scaling(mtParameters, tendonCompliance, specif
 
     return f_hillEquilibrium
 
-# %% CasADi function to explicitly describe the dynamic equations governing 
-# the arm movements.
 def armActivationDynamics(NArmJoints):
     
     t = 0.035 # time constant       
@@ -228,10 +142,7 @@ def armActivationDynamics(NArmJoints):
     
     return f_armActivationDynamics  
 
-# %% CasADi function to compute the metabolic cost of transport based on 
-# Bhargava et al. (2004).
-
-def metabolicsBhargava_muscle_length_scaling(slow_twitch_ratio, maximalIsometricForce,
+def metabolicsBhargava(slow_twitch_ratio, maximalIsometricForce,
                        optimalFiberLength, specific_tension, smoothingConstant,
                        use_fiber_length_dep_curve=False,
                        use_force_dependent_shortening_prop_constant=True,
@@ -251,6 +162,7 @@ def metabolicsBhargava_muscle_length_scaling(slow_twitch_ratio, maximalIsometric
     normActiveFiberLengthForce_SX = (
         ca.SX.sym('normActiveFiberLengthForce', NMuscles))
     model_mass_scaling_SX = ca.SX.sym('model_mass_scaling', 1, 1)
+    muscle_cross_section_multiplier_SX = ca.SX.sym(' muscle_cross_section_multiplier', NMuscles)
 
     activationHeatRate = ca.SX(NMuscles, 1)
     maintenanceHeatRate = ca.SX(NMuscles, 1)
@@ -267,13 +179,12 @@ def metabolicsBhargava_muscle_length_scaling(slow_twitch_ratio, maximalIsometric
     muscleMass_scaled = ca.SX(NMuscles, 1)
 
 
-
     from metabolicEnergyModels import Bhargava2004SmoothedMuscleMetabolics
 
 
     for m in range(NMuscles):
         muscleVolume_original[m] = maximalIsometricForce[m] / (1e6 * specific_tension[0, m]) * optimalFiberLength[m]
-        muscleVolume_scaled[m] = muscleVolume_original[m] * model_mass_scaling_SX
+        muscleVolume_scaled[m] = muscleVolume_original[m] * model_mass_scaling_SX * muscle_cross_section_multiplier_SX[m]
         optimalFiberLength_scaled[m] = optimalFiberLength[m] * muscle_length_scaling_SX[m]
         maximalIsometricForce_scaled[m] = muscleVolume_scaled[m] / optimalFiberLength_scaled[m] * (1e6 * specific_tension[0, m])
         muscleMass_scaled[m] = muscleVolume_scaled[m] * 1059.7
@@ -304,216 +215,15 @@ def metabolicsBhargava_muscle_length_scaling(slow_twitch_ratio, maximalIsometric
     f_metabolicsBhargava = ca.Function('metabolicsBhargava',
                                        [excitation_SX, activation_SX, normFiberLength_SX,
                                         fiberVelocity_SX, activeFiberForce_SX,
-                                        passiveFiberForce_SX,
-                                        normActiveFiberLengthForce_SX, muscle_length_scaling_SX, model_mass_scaling_SX],
+                                        passiveFiberForce_SX, normActiveFiberLengthForce_SX,
+                                        muscle_length_scaling_SX, model_mass_scaling_SX,
+                                        muscle_cross_section_multiplier_SX],
                                        [activationHeatRate, maintenanceHeatRate,
                                         shorteningHeatRate, mechanicalWork,
                                         totalHeatRate, metabolicEnergyRate])
 
     return f_metabolicsBhargava
 
-
-def metabolicsBhargava(slowTwitchRatio, maximalIsometricForce,
-                       muscleMass, smoothingConstant,
-                       use_fiber_length_dep_curve=False,
-                       use_force_dependent_shortening_prop_constant=True,
-                       include_negative_mechanical_work=False):
-    NMuscles = maximalIsometricForce.shape[0]
-
-    # Function variables.
-    excitation = ca.SX.sym('excitation', NMuscles)
-    activation = ca.SX.sym('activation', NMuscles)
-    normFiberLength = ca.SX.sym('normFiberLength', NMuscles)
-    fiberVelocity = ca.SX.sym('fiberVelocity', NMuscles)
-    activeFiberForce = ca.SX.sym('activeFiberForce', NMuscles)
-    passiveFiberForce = ca.SX.sym('passiveFiberForce', NMuscles)
-    normActiveFiberLengthForce = (
-        ca.SX.sym('normActiveFiberLengthForce', NMuscles))
-
-    activationHeatRate = ca.SX(NMuscles, 1)
-    maintenanceHeatRate = ca.SX(NMuscles, 1)
-    shorteningHeatRate = ca.SX(NMuscles, 1)
-    mechanicalWork = ca.SX(NMuscles, 1)
-    totalHeatRate = ca.SX(NMuscles, 1)
-    metabolicEnergyRate = ca.SX(NMuscles, 1)
-    slowTwitchExcitation = ca.SX(NMuscles, 1)
-    fastTwitchExcitation = ca.SX(NMuscles, 1)
-
-    from metabolicEnergyModels import Bhargava2004SmoothedMuscleMetabolics
-
-    for m in range(NMuscles):
-        metabolics = (Bhargava2004SmoothedMuscleMetabolics(
-            excitation[m], activation[m],
-            normFiberLength[m],
-            fiberVelocity[m],
-            activeFiberForce[m],
-            passiveFiberForce[m],
-            normActiveFiberLengthForce[m],
-            slowTwitchRatio[m],
-            maximalIsometricForce[m],
-            muscleMass[m], smoothingConstant))
-
-        slowTwitchExcitation[m] = metabolics.getTwitchExcitation()[0]
-        fastTwitchExcitation[m] = metabolics.getTwitchExcitation()[1]
-        activationHeatRate[m] = metabolics.getActivationHeatRate()
-        maintenanceHeatRate[m] = metabolics.getMaintenanceHeatRate(
-            use_fiber_length_dep_curve)
-        shorteningHeatRate[m] = metabolics.getShorteningHeatRate(
-            use_force_dependent_shortening_prop_constant)
-        mechanicalWork[m] = metabolics.getMechanicalWork(
-            include_negative_mechanical_work)
-        totalHeatRate[m] = metabolics.getTotalHeatRate()
-        metabolicEnergyRate[m] = metabolics.getMetabolicEnergyRate()
-
-    f_metabolicsBhargava = ca.Function('metabolicsBhargava',
-                                       [excitation, activation, normFiberLength,
-                                        fiberVelocity, activeFiberForce,
-                                        passiveFiberForce,
-                                        normActiveFiberLengthForce],
-                                       [activationHeatRate, maintenanceHeatRate,
-                                        shorteningHeatRate, mechanicalWork,
-                                        totalHeatRate, metabolicEnergyRate])
-
-    return f_metabolicsBhargava
-
-
-def metabolicsBhargava_muscleScaling(slowTwitchRatio, maximalIsometricForce,
-                       optimalFiberLength, specificTension, smoothingConstant, optimize_scaling, scaling_algorithm,
-                       use_fiber_length_dep_curve=False,
-                       use_force_dependent_shortening_prop_constant=True,
-                       include_negative_mechanical_work=False):
-    NMuscles = maximalIsometricForce.shape[0]
-
-    # Function variables.
-    excitation = ca.SX.sym('excitation', NMuscles)
-    activation = ca.SX.sym('activation', NMuscles)
-    normFiberLength = ca.SX.sym('normFiberLength', NMuscles)
-    fiberVelocity = ca.SX.sym('fiberVelocity', NMuscles)
-    activeFiberForce = ca.SX.sym('activeFiberForce', NMuscles)
-    passiveFiberForce = ca.SX.sym('passiveFiberForce', NMuscles)
-    normActiveFiberLengthForce = (
-        ca.SX.sym('normActiveFiberLengthForce', NMuscles))
-    model_mass_scaling = ca.SX.sym('model_mass_scaling', NMuscles)
-    muscle_length_scaling_vector = ca.SX.sym('muscle_scaling_vector', NMuscles)
-    muscleVolume_scaling_vector = ca.SX.sym('muscleVolume_scaling_vector', NMuscles)
-
-    activationHeatRate = ca.SX(NMuscles, 1)
-    maintenanceHeatRate = ca.SX(NMuscles, 1)
-    shorteningHeatRate = ca.SX(NMuscles, 1)
-    mechanicalWork = ca.SX(NMuscles, 1)
-    totalHeatRate = ca.SX(NMuscles, 1)
-    metabolicEnergyRate = ca.SX(NMuscles, 1)
-    slowTwitchExcitation = ca.SX(NMuscles, 1)
-    fastTwitchExcitation = ca.SX(NMuscles, 1)
-    muscleVolume_original = ca.SX(NMuscles, 1)
-    muscleVolume_scaled = ca.SX(NMuscles, 1)
-    maximalIsometricForce_scaled = ca.SX(NMuscles, 1)
-    optimalFiberLength_scaled = ca.SX(NMuscles, 1)
-    muscleMass_scaled = ca.SX(NMuscles, 1)
-
-    from metabolicEnergyModels import Bhargava2004SmoothedMuscleMetabolics
-
-    if optimize_scaling == True and scaling_algorithm == 'OurScaling':
-        for m in range(NMuscles):
-            muscleVolume_original[m] = np.multiply(maximalIsometricForce[m], optimalFiberLength[m])
-            muscleVolume_scaled[m] = np.multiply(muscleVolume_scaling_vector[m],
-                                                 np.multiply(muscleVolume_original[m], model_mass_scaling[m]))
-            optimalFiberLength_scaled[m] = np.multiply(optimalFiberLength[m], muscle_length_scaling_vector[m])
-            maximalIsometricForce_scaled[m] = np.divide(muscleVolume_scaled[m], optimalFiberLength_scaled[m])
-            muscleMass_scaled[m] = np.divide(np.multiply(muscleVolume_scaled[m], 1059.7),
-                                             np.multiply(specificTension[0, m].T, 1e6))
-            metabolics = (Bhargava2004SmoothedMuscleMetabolics(
-                excitation[m], activation[m],
-                normFiberLength[m],
-                fiberVelocity[m],
-                activeFiberForce[m],
-                passiveFiberForce[m],
-                normActiveFiberLengthForce[m],
-                slowTwitchRatio[m],
-                maximalIsometricForce_scaled[m],
-                muscleMass_scaled[m], smoothingConstant))
-
-            slowTwitchExcitation[m] = metabolics.getTwitchExcitation()[0]
-            fastTwitchExcitation[m] = metabolics.getTwitchExcitation()[1]
-            activationHeatRate[m] = metabolics.getActivationHeatRate()
-            maintenanceHeatRate[m] = metabolics.getMaintenanceHeatRate(
-                use_fiber_length_dep_curve)
-            shorteningHeatRate[m] = metabolics.getShorteningHeatRate(
-                use_force_dependent_shortening_prop_constant)
-            mechanicalWork[m] = metabolics.getMechanicalWork(
-                include_negative_mechanical_work)
-            totalHeatRate[m] = metabolics.getTotalHeatRate()
-            metabolicEnergyRate[m] = metabolics.getMetabolicEnergyRate()
-
-    if optimize_scaling == True and scaling_algorithm == 'OpenSimScaling':
-        for m in range(NMuscles):
-            optimalFiberLength_scaled[m] = np.multiply(optimalFiberLength[m], muscle_length_scaling_vector[m])
-            muscleVolume_scaled[m] = np.multiply(maximalIsometricForce[m], optimalFiberLength_scaled[m])
-            muscleMass_scaled[m] = np.divide(np.multiply(muscleVolume_scaled[m], 1059.7),
-                                             np.multiply(specificTension[0, m].T, 1e6))
-
-            metabolics = (Bhargava2004SmoothedMuscleMetabolics(
-                excitation[m], activation[m],
-                normFiberLength[m],
-                fiberVelocity[m],
-                activeFiberForce[m],
-                passiveFiberForce[m],
-                normActiveFiberLengthForce[m],
-                slowTwitchRatio[m],
-                maximalIsometricForce[m],
-                muscleMass_scaled[m], smoothingConstant))
-
-            slowTwitchExcitation[m] = metabolics.getTwitchExcitation()[0]
-            fastTwitchExcitation[m] = metabolics.getTwitchExcitation()[1]
-            activationHeatRate[m] = metabolics.getActivationHeatRate()
-            maintenanceHeatRate[m] = metabolics.getMaintenanceHeatRate(
-                use_fiber_length_dep_curve)
-            shorteningHeatRate[m] = metabolics.getShorteningHeatRate(
-                use_force_dependent_shortening_prop_constant)
-            mechanicalWork[m] = metabolics.getMechanicalWork(
-                include_negative_mechanical_work)
-            totalHeatRate[m] = metabolics.getTotalHeatRate()
-            metabolicEnergyRate[m] = metabolics.getMetabolicEnergyRate()
-
-    if optimize_scaling == False:
-        for m in range(NMuscles):
-            muscleVolume_scaled[m] = np.multiply(maximalIsometricForce[m], optimalFiberLength[m])
-            muscleMass_scaled[m] = np.divide(np.multiply(muscleVolume_scaled[m], 1059.7),
-                                             np.multiply(specificTension[0, m].T, 1e6))
-            metabolics = (Bhargava2004SmoothedMuscleMetabolics(
-                excitation[m], activation[m],
-                normFiberLength[m],
-                fiberVelocity[m],
-                activeFiberForce[m],
-                passiveFiberForce[m],
-                normActiveFiberLengthForce[m],
-                slowTwitchRatio[m],
-                maximalIsometricForce[m],
-                muscleMass_scaled[m], smoothingConstant))
-
-            slowTwitchExcitation[m] = metabolics.getTwitchExcitation()[0]
-            fastTwitchExcitation[m] = metabolics.getTwitchExcitation()[1]
-            activationHeatRate[m] = metabolics.getActivationHeatRate()
-            maintenanceHeatRate[m] = metabolics.getMaintenanceHeatRate(
-                use_fiber_length_dep_curve)
-            shorteningHeatRate[m] = metabolics.getShorteningHeatRate(
-                use_force_dependent_shortening_prop_constant)
-            mechanicalWork[m] = metabolics.getMechanicalWork(
-                include_negative_mechanical_work)
-            totalHeatRate[m] = metabolics.getTotalHeatRate()
-            metabolicEnergyRate[m] = metabolics.getMetabolicEnergyRate()
-
-    f_metabolicsBhargava = ca.Function('metabolicsBhargava',
-                                       [excitation, activation, normFiberLength,
-                                        fiberVelocity, activeFiberForce,
-                                        passiveFiberForce,
-                                        normActiveFiberLengthForce, muscle_length_scaling_vector, model_mass_scaling,
-                                        muscleVolume_scaling_vector],
-                                       [activationHeatRate, maintenanceHeatRate,
-                                        shorteningHeatRate, mechanicalWork,
-                                        totalHeatRate, metabolicEnergyRate])
-
-    return f_metabolicsBhargava
 
 # %% CasADi function to compute passive (limit) joint torques.
 def getLimitTorques(k, theta, d):

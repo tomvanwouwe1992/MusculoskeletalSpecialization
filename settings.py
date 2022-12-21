@@ -14,6 +14,7 @@ def getSettings():
             'stiffnessMtp': 40,
             'activation_function': 'tanh',
             'bounds_scaling_factors': [np.ones((54, 1)), np.ones((54, 1))],
+            'strength_training': False,
             'muscle_geometry': 'NeMu',
             'energy_cost_function_scaling': 1e-4},
 
@@ -29,6 +30,7 @@ def getSettings():
             'stiffnessMtp': 40,
             'activation_function': 'tanh',
             'bounds_scaling_factors': [0.8 * np.ones((54, 1)), 1.2 * np.ones((54, 1))],
+            'strength_training': False,
             'muscle_geometry': 'NeMu',
             'energy_cost_function_scaling': 1e-4},
 
@@ -44,6 +46,7 @@ def getSettings():
             'stiffnessMtp': 25,
             'activation_function': 'tanh',
             'bounds_scaling_factors': [np.ones((54, 1)), np.ones((54, 1))],
+            'strength_training': False,
             'muscle_geometry': 'NeMu',
             'energy_cost_function_scaling': 1},
 
@@ -59,6 +62,7 @@ def getSettings():
             'stiffnessMtp': 25,
             'activation_function': 'tanh',
             'bounds_scaling_factors': [0.8 * np.ones((54, 1)), 1.2 * np.ones((54, 1))],
+            'strength_training': False,
             'muscle_geometry': 'NeMu',
             'energy_cost_function_scaling': 1},
 
@@ -74,6 +78,7 @@ def getSettings():
             'stiffnessMtp': 40,
             'activation_function': 'tanh',
             'bounds_scaling_factors': 'case 4',
+            'strength_training': False,
             'muscle_geometry': 'NeMu',
             'energy_cost_function_scaling': 1e-4},
 
@@ -89,6 +94,7 @@ def getSettings():
             'stiffnessMtp': 25,
             'activation_function': 'tanh',
             'bounds_scaling_factors': 'case 2',
+            'strength_training': False,
             'muscle_geometry': 'NeMu',
             'energy_cost_function_scaling': 1},
 
