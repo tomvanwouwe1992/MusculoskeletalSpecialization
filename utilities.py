@@ -26,12 +26,12 @@ def generate_full_gait_cycle_kinematics(path_results, joints, number_of_joints, 
     Qs_gait_cycle_opt = np.concatenate((Qs_opt, Qs_opt_part_2), 1)
 
     labels = ['time'] + joints
-    tgrid_GC = tgrid = np.linspace(0, 2 * finalTime_opt[0], 2 * number_of_mesh_intervals + 1)
+    tgrid_GC =  np.linspace(0, 2 * finalTime_opt[0], 2 * number_of_mesh_intervals + 1)
     Qs_gait_cycle_nsc = (
                 Qs_gait_cycle_opt * (scaling_Q.to_numpy().T * np.ones((1, 2 * number_of_mesh_intervals + 1)))).T
     Qs_gait_cycle_nsc[:, rotational_joint_indices_in_joints] = 180 / np.pi * Qs_gait_cycle_nsc[:,
                                                                              rotational_joint_indices_in_joints]
-    data = np.concatenate((tgrid_GC, Qs_gait_cycle_nsc), axis=1)
+    data = np.concatenate((np.reshape(tgrid_GC, (2 * number_of_mesh_intervals + 1, 1)), Qs_gait_cycle_nsc), axis=1)
     from utilities import numpy2storage
 
     numpy2storage(labels, data, os.path.join(path_results, 'motion.mot'))
@@ -332,7 +332,7 @@ def get_skeletal_dynamics_outputs(map_external_function_outputs, f_linearPassive
 
 
 
-def get_biomechanics_outputs(f_metabolicsBhargava, f_get_muscle_tendon_length_velocity_moment_arm, f_hillEquilibrium, joints, number_of_joints, number_of_muscles, number_of_mesh_intervals, muscle_actuated_joints_indices_in_joints, number_of_muscle_actuated_joints, polynomial_order, scaling_vector_opt, Qsin_col_opt, Qdsin_col_opt, a_col_opt, normF_nsc_col_opt, normFDt_nsc_col_opt, muscle_articulated_bodies_indices_in_skeleton_scaling_bodies, muscle_scaling_vector_opt, model_mass_scaling_opt):
+def get_biomechanics_outputs(f_metabolicsBhargava, f_get_muscle_tendon_length_velocity_moment_arm, f_hillEquilibrium, joints, number_of_joints, number_of_muscles, number_of_mesh_intervals, muscle_actuated_joints_indices_in_joints, number_of_muscle_actuated_joints, polynomial_order, scaling_vector_opt, Qsin_col_opt, Qdsin_col_opt, a_col_opt, normF_nsc_col_opt, normFDt_nsc_col_opt, muscle_articulated_bodies_indices_in_skeleton_scaling_bodies, muscle_scaling_vector_opt, model_mass_scaling_opt, muscle_cross_section_multiplier_opt):
     lMT_col_opt = np.zeros((number_of_muscles, polynomial_order * number_of_mesh_intervals))
     vMT_col_opt = np.zeros((number_of_muscles, polynomial_order * number_of_mesh_intervals))
     dM_col_opt = np.zeros(
@@ -360,7 +360,7 @@ def get_biomechanics_outputs(f_metabolicsBhargava, f_get_muscle_tendon_length_ve
          passiveFiberForce_effectivej] = (
             f_hillEquilibrium(a_col_opt[:, i], lMTj_lr, vMTj_lr,
                               normF_nsc_col_opt[:, i], normFDt_nsc_col_opt[:, i], muscle_scaling_vector_opt,
-                              model_mass_scaling_opt))
+                              model_mass_scaling_opt, muscle_cross_section_multiplier_opt))
         active_muscle_force_col_opt[:, i] = np.reshape(activeFiberForce_effectivej, (number_of_muscles,))
         passive_muscle_force_col_opt[:, i] = np.reshape(passiveFiberForce_effectivej, (number_of_muscles,))
         hillEquilibrium_residual_col_opt[:, i] = np.reshape(hillEquilibriumj, (number_of_muscles,))
@@ -368,7 +368,7 @@ def get_biomechanics_outputs(f_metabolicsBhargava, f_get_muscle_tendon_length_ve
         metabolicEnergyRate_col_opt[:, i] = np.reshape(f_metabolicsBhargava(
             a_col_opt[:, i], a_col_opt[:, i], normFiberLengthj, fiberVelocityj,
             activeFiberForcej, passiveFiberForcej,
-            normActiveFiberLengthForcej, muscle_scaling_vector_opt, model_mass_scaling_opt)[5], (number_of_muscles,))
+            normActiveFiberLengthForcej, muscle_scaling_vector_opt, model_mass_scaling_opt, muscle_cross_section_multiplier_opt)[5], (number_of_muscles,))
 
         for j in range(len(muscle_actuated_joints_indices_in_joints)):
             joint = joints[muscle_actuated_joints_indices_in_joints[j]]
@@ -384,7 +384,7 @@ def get_biomechanics_outputs(f_metabolicsBhargava, f_get_muscle_tendon_length_ve
 
     return lMT_col_opt, vMT_col_opt, dM_col_opt, muscle_active_joint_torques_col_opt, muscle_passive_joint_torques_col_opt, muscle_joint_torques_col_opt, biological_joint_torques_equilibrium_residual_col_opt, active_muscle_force_col_opt, passive_muscle_force_col_opt, hillEquilibrium_residual_col_opt, metabolicEnergyRate_col_opt
 
-def get_max_iso_torques(f_get_muscle_tendon_length_velocity_moment_arm, f_hillEquilibrium, joints, number_of_muscles, muscle_actuated_joints, muscle_actuated_joints_indices_in_joints, muscle_articulated_bodies_indices_in_skeleton_scaling_bodies, muscle_scaling_vector_opt, scaling_vector_opt, model_mass_scaling_opt):
+def get_max_iso_torques(f_get_muscle_tendon_length_velocity_moment_arm, f_hillEquilibrium, joints, number_of_muscles, muscle_actuated_joints, muscle_actuated_joints_indices_in_joints, muscle_articulated_bodies_indices_in_skeleton_scaling_bodies, muscle_scaling_vector_opt, scaling_vector_opt, model_mass_scaling_opt, muscle_cross_section_multiplier_opt):
     # Evaluate maximal isometric torques
 
     max_iso_torques_joints = ['hip_flexion_l', 'hip_flexion_l', 'knee_angle_l', 'knee_angle_l', 'ankle_angle_l',
@@ -443,7 +443,7 @@ def get_max_iso_torques(f_get_muscle_tendon_length_velocity_moment_arm, f_hillEq
              normFiberLength_neutral, fiberVelocity_neutral, _, passiveEffectiveFiberForce_neutral] = (
                 f_hillEquilibrium(a_max_iso_torque, lMT_max_iso_torque, vMT_max_iso_torque,
                                   F_max_iso_torque, np.zeros((number_of_muscles, 1)), muscle_scaling_vector_opt,
-                                  model_mass_scaling_opt))
+                                  model_mass_scaling_opt, muscle_cross_section_multiplier_opt))
 
             opti_maxIso.subject_to(hillEquilibrium_neutral == 0)
             joint_maximized = max_iso_torques_joints[j]
@@ -458,7 +458,7 @@ def get_max_iso_torques(f_get_muscle_tendon_length_velocity_moment_arm, f_hillEq
              normFiberLength_neutral, fiberVelocity_neutral, _, passiveEffectiveFiberForce_neutral] = (
                 f_hillEquilibrium(a_max_iso_torque, lMT_max_iso_torque, vMT_max_iso_torque,
                                   F_max_iso_torque, np.zeros((number_of_muscles, 1)), muscle_scaling_vector_opt,
-                                  model_mass_scaling_opt))
+                                  model_mass_scaling_opt, muscle_cross_section_multiplier_opt))
             maximal_isometric_torques[k, j] = ca.sum1(dM_max_iso_torque[:, i] * Ft_neutral)
             passive_isometric_torques[k, j] = ca.sum1(dM_max_iso_torque[:, i] * passiveEffectiveFiberForce_neutral)
     return Qs_max_iso_torque, maximal_isometric_torques, passive_isometric_torques, max_iso_torques_joints

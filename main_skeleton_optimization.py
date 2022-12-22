@@ -2,7 +2,7 @@ import os, sys, utilities, muscleData, casadiFunctions, NeMu_subfunctions, setti
 import casadi as ca
 import numpy as np
 
-solveProblem = True # Set True to solve the optimal control problem.
+solveProblem = False # Set True to solve the optimal control problem.
 saveResults = True  # Set True to save the results of the optimization.
 analyzeResults = True  # Set True to analyze the results.
 loadResults = True  # Set True to load the results of the optimization.
@@ -12,7 +12,7 @@ plotResults = False
 set_guess_from_solution = False
 
 # Select the case(s) for which you want to solve the associated problem(s)
-cases = [str(i) for i in range(3, 7)]
+cases = [str(i) for i in range(3, 4)]
 settings = settings.getSettings()
 
 for case in cases:
@@ -814,14 +814,14 @@ for case in cases:
 
         time_col_opt = utilities.get_time_col_opt(finalTime_opt, number_of_mesh_intervals, polynomial_order)
 
-        lMT_col_opt, vMT_col_opt, dM_col_opt, muscle_active_joint_torques_col_opt, muscle_passive_joint_torques_col_opt, muscle_joint_torques_col_opt, biological_joint_torques_equilibrium_residual_col_opt, active_muscle_force_col_opt, passive_muscle_force_col_opt, hillEquilibrium_residual_col_opt, metabolicEnergyRate_col_opt = utilities.get_biomechanics_outputs(f_metabolicsBhargava, f_get_muscle_tendon_length_velocity_moment_arm, f_hillEquilibrium, joints, number_of_joints, number_of_muscles, number_of_mesh_intervals, muscle_actuated_joints_indices_in_joints, number_of_muscle_actuated_joints, polynomial_order, scaling_vector_opt, Qsin_col_opt, Qdsin_col_opt, a_col_opt, normF_nsc_col_opt, normFDt_nsc_col_opt, muscle_articulated_bodies_indices_in_skeleton_scaling_bodies, muscle_scaling_vector_opt, model_mass_scaling_opt)
+        lMT_col_opt, vMT_col_opt, dM_col_opt, muscle_active_joint_torques_col_opt, muscle_passive_joint_torques_col_opt, muscle_joint_torques_col_opt, biological_joint_torques_equilibrium_residual_col_opt, active_muscle_force_col_opt, passive_muscle_force_col_opt, hillEquilibrium_residual_col_opt, metabolicEnergyRate_col_opt = utilities.get_biomechanics_outputs(f_metabolicsBhargava, f_get_muscle_tendon_length_velocity_moment_arm, f_hillEquilibrium, joints, number_of_joints, number_of_muscles, number_of_mesh_intervals, muscle_actuated_joints_indices_in_joints, number_of_muscle_actuated_joints, polynomial_order, scaling_vector_opt, Qsin_col_opt, Qdsin_col_opt, a_col_opt, normF_nsc_col_opt, normFDt_nsc_col_opt, muscle_articulated_bodies_indices_in_skeleton_scaling_bodies, muscle_scaling_vector_opt, model_mass_scaling_opt, muscle_cross_section_multiplier_opt)
 
         metabolic_energy_outcomes = utilities.get_metabolic_energy_outcomes(metabolicEnergyRate_col_opt, time_col_opt,
                                                                             halfGC_length, model_mass_opt)
 
         Tj_col_opt, GRF_col_opt, GRM_col_opt, passive_joint_torques_col_opt, joint_torques_equilibrium_residual_col_opt, muscle_joint_torques_col_opt, limit_joint_torques_col_opt, passive_joint_torques_col_opt, generalized_forces_col_opt = utilities.get_skeletal_dynamics_outputs(map_external_function_outputs, f_linearPassiveTorque, f_linearPassiveMtpTorque, f_limit_torque, skeleton_dynamics_and_more, non_muscle_actuated_joints, joint_indices_in_external_function, number_of_joints, joints, mtpJoints, limit_torque_joints, polynomial_order, number_of_mesh_intervals, idxGRF, idxGRM, Qs_col_opt_nsc, Qds_col_opt_nsc, QsQds_col_opt_nsc, Qdds_col_opt_nsc, aArm_col_opt, MTP_reserve_col_opt, scaling_vector_opt, model_mass_opt, scalingArmA)
 
-        Qs_max_iso_torque, maximal_isometric_torques, passive_isometric_torques, max_iso_torques_joints = utilities.get_max_iso_torques(f_get_muscle_tendon_length_velocity_moment_arm, f_hillEquilibrium, joints, number_of_muscles, muscle_actuated_joints, muscle_actuated_joints_indices_in_joints, muscle_articulated_bodies_indices_in_skeleton_scaling_bodies, muscle_scaling_vector_opt, scaling_vector_opt, model_mass_scaling_opt)
+        Qs_max_iso_torque, maximal_isometric_torques, passive_isometric_torques, max_iso_torques_joints = utilities.get_max_iso_torques(f_get_muscle_tendon_length_velocity_moment_arm, f_hillEquilibrium, joints, number_of_muscles, muscle_actuated_joints, muscle_actuated_joints_indices_in_joints, muscle_articulated_bodies_indices_in_skeleton_scaling_bodies, muscle_scaling_vector_opt, scaling_vector_opt, model_mass_scaling_opt, muscle_cross_section_multiplier_opt)
 
         # Store and save
         if not os.path.exists(os.path.join(path_trajectories,
