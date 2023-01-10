@@ -1,4 +1,12 @@
 import numpy as np
+
+# 1 :: GEN - sprinting
+# 2 :: SKEL_SPRINT - sprinting
+# 3 :: GEN - marathon
+# 4 :: SKEL_MARATHON - marathon
+# 5 :: SKEL_MARATHON - sprint
+# 5 :: SKEL_SPRINT - marathon
+
 def getSettings():
 
     settings = {

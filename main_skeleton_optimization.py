@@ -2,7 +2,7 @@ import os, sys, utilities, muscleData, casadiFunctions, NeMu_subfunctions, setti
 import casadi as ca
 import numpy as np
 
-solveProblem = False # Set True to solve the optimal control problem.
+solveProblem = True # Set True to solve the optimal control problem.
 saveResults = True  # Set True to save the results of the optimization.
 analyzeResults = True  # Set True to analyze the results.
 loadResults = True  # Set True to load the results of the optimization.
@@ -12,7 +12,7 @@ plotResults = False
 set_guess_from_solution = False
 
 # Select the case(s) for which you want to solve the associated problem(s)
-cases = [str(i) for i in range(3, 4)]
+cases = [str(i) for i in range(5, 7)]
 settings = settings.getSettings()
 
 for case in cases:
@@ -368,7 +368,7 @@ for case in cases:
 
         # Model scaling parameters (body dimensions, muscle lengths, mass)
         if np.all(bounds_skeleton_scaling_factors[0] == bounds_skeleton_scaling_factors[1]):
-            scaling_vector = bounds_skeleton_scaling_factors[0]
+            scaling_vector = np.reshape(bounds_skeleton_scaling_factors[0],(54,1))
             scaling_vector_opti = opti.variable(54, polynomial_order * number_of_mesh_intervals)
             opti.subject_to(scaling_vector_opti == np.tile(scaling_vector,(1,polynomial_order * number_of_mesh_intervals)))
 
