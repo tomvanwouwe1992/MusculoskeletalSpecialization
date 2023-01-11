@@ -8,11 +8,10 @@ analyzeResults = True  # Set True to analyze the results.
 loadResults = True  # Set True to load the results of the optimization.
 writeMotionFiles = True  # Set True to write motion files for use in OpenSim GUI
 saveOptimalTrajectories = True  # Set True to save optimal trajectories
-plotResults = False
 set_guess_from_solution = False
 
 # Select the case(s) for which you want to solve the associated problem(s)
-cases = [str(i) for i in range(5, 7)]
+cases = [str(i) for i in range(5, 6)]
 settings = settings.getSettings()
 
 for case in cases:

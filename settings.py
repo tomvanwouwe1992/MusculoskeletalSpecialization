@@ -5,7 +5,7 @@ import numpy as np
 # 3 :: GEN - marathon
 # 4 :: SKEL_MARATHON - marathon
 # 5 :: SKEL_MARATHON - sprint
-# 5 :: SKEL_SPRINT - marathon
+# 6 :: SKEL_SPRINT - marathon
 
 def getSettings():
 
