@@ -12,9 +12,9 @@ if __name__ == '__main__':
     #####################################################################
     # FLOW CONTROL
     #####################################################################
-    generate_randomly_scaled_models = False
-    generate_ground_truth_data_all_muscles = False
-    train_model = False
+    generate_randomly_scaled_models = True
+    generate_ground_truth_data_all_muscles = True
+    train_model = True
     convert_to_NumPy = True
     build_NeMu_CasADi = True
     activation_function = 'tanh'
@@ -22,7 +22,7 @@ if __name__ == '__main__':
     number_of_randomly_scaled_models = 2000
     root_path = os.path.dirname(os.path.abspath('NeMu_build.py'))
     model_path = root_path + '/Models/'
-    save_path = root_path + '/Models/NeMu/' + activation_function + '/'
+    save_path = root_path + '/Models/NeMu_accurate/' + activation_function + '/'
 
     # list of bodies to be scaled - bodies with identical scaling factors should be grouped in a sublist
     bodies_scaling_list = ["torso",
@@ -78,11 +78,8 @@ if __name__ == '__main__':
         covariance_scaling_factors[indices_off_diagonal] = correlation_scaling_factors*np.sqrt(variance_scaling_factors)**2
 
 
-        scale_vectors = np.random.multivariate_normal(mean_scaling_factor, covariance_scaling_factors, size=number_of_randomly_scaled_models)
-        # minimum = 0.8 * np.ones((np.shape(scale_vectors)))
-        # maximum = 1.2 * np.ones((np.shape(scale_vectors)))
-        # scale_vectors = np.maximum(minimum, scale_vectors)
-        # scale_vectors = np.minimum(maximum, scale_vectors)
+        # scale_vectors = np.random.multivariate_normal(mean_scaling_factor, covariance_scaling_factors, size=number_of_randomly_scaled_models)
+        scale_vectors = np.random.uniform(low=0.8, high=1.2, size=(number_of_randomly_scaled_models,number_of_scaling_factors))
         iterable = []
         from NeMu_subfunctions import generateScaledModels_NeMu
         for i in range(0, number_of_randomly_scaled_models):
@@ -189,11 +186,12 @@ if __name__ == '__main__':
     muscle_list = os.listdir(save_path)
     if train_model == True:
         iterable = []
+        # NeMu_subfunctions.trainNeMu_Geometry_efficient(included_muscles[0].name, save_path, activation_function)
         for i in range(0,len(included_muscles)):
             iterable.append((included_muscles[i].name, save_path, activation_function))
 
         pool = multiprocessing.Pool(processes=16)
-        pool.starmap(NeMu_subfunctions.trainNeMu_Geometry_efficient, iterable)
+        pool.starmap(NeMu_subfunctions.trainNeMu_Geometry_accurate, iterable)
         pool.close()
         pool.join()
         from matplotlib.backends.backend_pdf import PdfPages

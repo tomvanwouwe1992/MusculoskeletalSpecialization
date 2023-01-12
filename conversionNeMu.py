@@ -10,8 +10,8 @@ path.append(r"C:\Program Files\casadi-windows-py37-v3.5.5-64bit")
 global ca
 import casadi as ca
 
-root_path = os.path.dirname(os.path.abspath('NeMuGeometry_Approximation.py'))
-save_path = root_path + '/OpenSimModel/Hamner_modified/Model/NeMu/tanh_shallow'
+root_path = os.path.dirname(os.path.abspath('NeMu_build.py'))
+save_path = root_path + '/Models/NeMu_accurate/tanh'
 
 path_NeMu_models = save_path
 list_model_names = os.listdir(path_NeMu_models)

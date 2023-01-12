@@ -142,6 +142,37 @@ def armActivationDynamics(NArmJoints):
     
     return f_armActivationDynamics  
 
+
+def get_muscle_volume_and_scaled_volume(maximalIsometricForce,
+                       optimalFiberLength, specific_tension):
+
+    NMuscles = maximalIsometricForce.shape[0]
+    # Function variables.
+    muscle_length_scaling_SX = ca.SX.sym("scaling_vector_SX", NMuscles, 1)
+    model_mass_scaling_SX = ca.SX.sym('model_mass_scaling', 1, 1)
+    muscle_cross_section_multiplier_SX = ca.SX.sym(' muscle_cross_section_multiplier', NMuscles)
+
+    muscleVolume_original = ca.SX(NMuscles, 1)
+    muscleVolume_scaled = ca.SX(NMuscles, 1)
+    maximalIsometricForce_scaled = ca.SX(NMuscles, 1)
+    optimalFiberLength_scaled = ca.SX(NMuscles, 1)
+
+    for m in range(NMuscles):
+        muscleVolume_original[m] = maximalIsometricForce[m] / (1e6 * specific_tension[0, m]) * optimalFiberLength[m]
+        muscleVolume_scaled[m] = muscleVolume_original[m] * model_mass_scaling_SX * muscle_cross_section_multiplier_SX[
+            m]
+        optimalFiberLength_scaled[m] = optimalFiberLength[m] * muscle_length_scaling_SX[m]
+        maximalIsometricForce_scaled[m] = muscleVolume_scaled[m] / optimalFiberLength_scaled[m] * (
+                    1e6 * specific_tension[0, m])
+
+
+    f_get_muscle_volume_and_scaled_volume = ca.Function('get_muscle_volume_and_scaled_volume',
+                                       [muscle_length_scaling_SX, model_mass_scaling_SX,
+                                        muscle_cross_section_multiplier_SX],
+                                       [muscleVolume_original, muscleVolume_scaled, optimalFiberLength_scaled, maximalIsometricForce_scaled])
+
+    return f_get_muscle_volume_and_scaled_volume
+
 def metabolicsBhargava(slow_twitch_ratio, maximalIsometricForce,
                        optimalFiberLength, specific_tension, smoothingConstant,
                        use_fiber_length_dep_curve=False,

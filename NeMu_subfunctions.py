@@ -528,6 +528,79 @@ def get_mtu_length_and_moment_arm(model_os, muscle, q):
     return trajectory_mtu_length, trajectory_moment_arm
 
 
+def trainNeMu_Geometry_accurate(muscle_name, save_path, activation_function):
+    os.environ['CUDA_VISIBLE_DEVICES'] = '-1'  # '-1'
+    # os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+    with open(save_path + muscle_name, 'rb') as f:
+        muscle = pickle.load(f)
+    in_full = np.concatenate((muscle.scaling_vector_samples, muscle.q_samples), axis=1)
+    out_full = np.concatenate((muscle.moment_arm_samples, muscle.muscle_tendon_length_samples), axis=1)
+
+
+    # We remove feature-label combinations that are out of distribution and potentially erroneous
+    to_keep = np.ones((np.size(out_full,0),))
+    for i in range(np.size(out_full,1)):
+        labels_i = out_full[:,i]
+        mean = np.mean(labels_i)
+        std = np.std(labels_i)
+        zero_based = abs(labels_i - mean)
+        max_deviations = 3
+        to_keep = to_keep * (zero_based < max_deviations * std)
+
+    to_keep = to_keep == 1
+
+    in_full = in_full[to_keep, :]
+    out_full = out_full[to_keep, :]
+
+    permutation = np.random.permutation(np.shape(in_full)[0])
+    in_full = in_full[permutation, :]
+    out_full = out_full[permutation, :]
+
+    length = np.shape(in_full)[0]
+    x_train = in_full[0:int(length * 0.9), :]
+    x_test = in_full[int(length * 0.9):, :]
+
+    y_train = out_full[0:int(length * 0.9), :]
+    y_test = out_full[int(length * 0.9):, :]
+    model = keras.models.Sequential()
+
+    if len(muscle.actuated_coordinate_indices) == 1:
+        model.add(keras.layers.Dense(8, input_dim=np.shape(in_full)[1], activation=activation_function))
+        model.add(keras.layers.Dense(8, input_dim=np.shape(in_full)[1], activation=activation_function))
+        model.add(keras.layers.Dense(np.shape(out_full)[1], activation='linear'))
+
+    elif len(muscle.actuated_coordinate_indices) == 2:
+        model.add(keras.layers.Dense(8, input_dim=np.shape(in_full)[1], activation=activation_function))
+        model.add(keras.layers.Dense(8, input_dim=np.shape(in_full)[1], activation=activation_function))
+        model.add(keras.layers.Dense(np.shape(out_full)[1], activation='linear'))
+
+    elif len(muscle.actuated_coordinate_indices) == 3:
+        model.add(keras.layers.Dense(16, input_dim=np.shape(in_full)[1], activation=activation_function))
+        model.add(keras.layers.Dense(8, input_dim=np.shape(in_full)[1], activation=activation_function))
+        model.add(keras.layers.Dense(np.shape(out_full)[1], activation='linear'))
+
+    elif len(muscle.actuated_coordinate_indices) > 3:
+        model.add(keras.layers.Dense(16, input_dim=np.shape(in_full)[1], activation=activation_function))
+        model.add(keras.layers.Dense(8, input_dim=np.shape(in_full)[1], activation=activation_function))
+        model.add(keras.layers.Dense(np.shape(out_full)[1], activation='linear'))
+
+    out_normalization_range = np.amax(out_full, axis=0) - np.amin(out_full, axis=0)
+    weights_array = 1 / out_normalization_range
+
+    n_epoch = 1000
+    model.compile(loss='mean_squared_error', optimizer='adam', loss_weights=weights_array.tolist())
+    history = model.fit(x_train, y_train, epochs=n_epoch, validation_split=0.10, batch_size=64)
+    score = model.evaluate(x_test, y_test, batch_size=64)
+
+    print(score)
+
+    model.save(save_path + muscle.name + '_Geometry.h5')
+    with open(save_path + muscle.name + '_Geometry_trainingHistory', 'wb') as file_pi:
+        pickle.dump(history.history, file_pi)
+
+
+
+
 def trainNeMu_Geometry_efficient(muscle_name, save_path, activation_function):
     os.environ['CUDA_VISIBLE_DEVICES'] = '-1'  # '-1'
     # os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
