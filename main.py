@@ -11,7 +11,7 @@ saveOptimalTrajectories = True  # Set True to save optimal trajectories
 set_guess_from_solution = False
 
 # Select the case(s) for which you want to solve the associated problem(s)
-cases = [str(i) for i in range(1, 2)]
+cases = [str(i) for i in range(1, 11)]
 settings = settings.getSettings()
 
 for case in cases:
