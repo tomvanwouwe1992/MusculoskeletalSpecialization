@@ -440,12 +440,15 @@ for case in cases:
                 opti.bounded(17.5, BMI_opti, 25.5))
                 
             # Impose sprinter or distance runner length when required
+            # Note that when this is left a free variable, different initialization leads to different optimal scaling. ( This is a sensitivity we noted while doing simulations experiments)
+            # By doing "grid search", 1 cm increments across heights, we found that results were less sensitive to initialization - and best results were found with the heights below.
             if enforce_target_speed == True:
                opti.subject_to(subject_height_opti == 1.76)
             else:
                opti.subject_to(subject_height_opti == 1.81)
 
         if strength_training == True:
+            # muscle_cross_section_multiplier_opti - the name muscle cross section multiplier is poorly chosen, it should actually be muscle volume multiplier which is what it is in our formulation
             muscle_cross_section_multiplier_opti = opti.variable(number_of_muscles,
                                                                  polynomial_order * number_of_mesh_intervals)
             opti.subject_to(
