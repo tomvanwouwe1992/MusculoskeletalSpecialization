@@ -2,7 +2,7 @@ import os, sys, utilities, muscleData, casadiFunctions, NeMu_subfunctions, setti
 import casadi as ca
 import numpy as np
 
-solveProblem = True # Set True to solve the optimal control problem.
+solveProblem = False # Set True to solve the optimal control problem.
 saveResults = True  # Set True to save the results of the optimization.
 analyzeResults = True  # Set True to analyze the results.
 loadResults = True  # Set True to load the results of the optimization.
@@ -11,7 +11,7 @@ saveOptimalTrajectories = True  # Set True to save optimal trajectories
 set_guess_from_solution = False
 
 # Select the case(s) for which you want to solve the associated problem(s)
-cases = [str(i) for i in range(1, 11)]
+cases = ['11'] #, '12', '13', '14', '15', '16', '17', '18', '19', '20']
 settings = settings.getSettings()
 
 for case in cases:
@@ -87,7 +87,7 @@ for case in cases:
                'controls': 1e3*energy_cost_function_scaling*0.001}
 
     if energy_cost_function_scaling < 0.1:
-        cost_function_weights['controls'] = energy_cost_function_scaling
+        cost_function_weights['controls'] = 0.001
     else:
         cost_function_weights['controls'] = 0.001
 
@@ -129,9 +129,6 @@ for case in cases:
     muscle_articulated_bodies_indices_in_skeleton_scaling_bodies, bodies_skeleton_scaling_coupling_indices = utilities.get_names_and_indices_of_joints_and_bodies(path_model, skeleton_scaling_bodies, bodies_skeleton_scaling_coupling)
 
     ### Musculoskeletal geometry
-    # NeMu_folder = os.path.dirname(
-    #     os.path.abspath('main.py')) + "/Models/NeMu/tanh"
-
     f_get_muscle_tendon_length_velocity_moment_arm = NeMu_subfunctions.NeMuApproximation(muscles, muscle_actuated_joints, muscle_articulated_bodies, NeMu_folder)
     f_muscle_length_scaling = casadiFunctions.muscle_length_scaling_vector(muscle_actuated_joints, f_get_muscle_tendon_length_velocity_moment_arm)
 
@@ -441,7 +438,12 @@ for case in cases:
             BMI_opti = (model_mass_scaling_opti[0, 0] * modelMass) / (subject_height_opti * subject_height_opti)
             opti.subject_to(
                 opti.bounded(17.5, BMI_opti, 25.5))
-            opti.set_initial(BMI_opti, 21)
+                
+            # Impose sprinter or distance runner length when required
+            if enforce_target_speed == True:
+               opti.subject_to(subject_height_opti == 1.76)
+            else:
+               opti.subject_to(subject_height_opti == 1.81)
 
         if strength_training == True:
             muscle_cross_section_multiplier_opti = opti.variable(number_of_muscles,
@@ -452,6 +454,13 @@ for case in cases:
 
             for j in range(1, polynomial_order * number_of_mesh_intervals):
                 opti.subject_to(muscle_cross_section_multiplier_opti[:, 0] == muscle_cross_section_multiplier_opti[:, j])
+
+            # Impose left and right muscles to have the same multiplier (symmetry)
+            for j,muscle in enumerate(muscles):
+                if muscle[-1] == 'r':
+                    muscle_left = muscle[:-1] + 'l'
+                    j_left = muscles.index(muscle_left)
+                    opti.subject_to(muscle_cross_section_multiplier_opti[j, 0] == muscle_cross_section_multiplier_opti[j_left, 0])
 
             # Limit total change in muscle volume
             [muscleVolume_original, muscleVolume_scaled, optimalFiberLength_scaled, maximalIsometricForce_scaled] = f_muscle_volume(muscle_length_scaling_vector_opti[:, 0], model_mass_scaling_opti[:, 0],
@@ -796,7 +805,7 @@ for case in cases:
             opti.subject_to(averageSpeed == target_speed)
             Jall_sc = (ca.sum2(Jall) / distTraveled)
         else:
-            opti.subject_to(averageSpeed > 6)
+            opti.subject_to(averageSpeed > 7.5)
             Jall_sc = (ca.sum2(Jall) / distTraveled - 100 * averageSpeed ** 2) / 1000
         opti.minimize(Jall_sc)
 
@@ -830,7 +839,7 @@ for case in cases:
         model_BMI_opt, finalTime_opt, muscle_cross_section_multiplier_opt = utilities.get_results_opti(f_height, w_opt, number_of_muscles, number_of_mesh_intervals, polynomial_order, number_of_joints, number_of_non_muscle_actuated_joints, modelMass)
 
         # Generate motion file for full gait cycle
-        Qs_gait_cycle_opt, tgrid_GC, Qs_gait_cycle_nsc = utilities.generate_full_gait_cycle_kinematics(path_results, joints, number_of_joints, number_of_mesh_intervals, finalTime_opt, Qs_opt, scaling_Q, rotational_joint_indices_in_joints, periodic_joints_indices_start_to_end_position_matching, periodic_opposite_joints_indices_in_joints)
+        Qs_gait_cycle_opt, tgrid_GC, Qs_gait_cycle_nsc = utilities.generate_full_gait_cycle_kinematics(path_results, joints, muscles, number_of_joints, number_of_muscles, number_of_mesh_intervals, finalTime_opt, Qs_opt, scaling_Q, a_opt, rotational_joint_indices_in_joints, periodic_joints_indices_start_to_end_position_matching, periodic_opposite_joints_indices_in_joints, periodic_muscles_indices_start_to_end_matching)
 
         # Generate scaled model
         default_scale_tool_xml_name = path_model_folder + '/scaleTool_Default.xml'
@@ -860,6 +869,9 @@ for case in cases:
 
         Tj_col_opt, GRF_col_opt, GRM_col_opt, passive_joint_torques_col_opt, joint_torques_equilibrium_residual_col_opt, muscle_joint_torques_col_opt, limit_joint_torques_col_opt, passive_joint_torques_col_opt, generalized_forces_col_opt = utilities.get_skeletal_dynamics_outputs(map_external_function_outputs, f_linearPassiveTorque, f_linearPassiveMtpTorque, f_limit_torque, skeleton_dynamics_and_more, non_muscle_actuated_joints, joint_indices_in_external_function, number_of_joints, joints, mtpJoints, limit_torque_joints, polynomial_order, number_of_mesh_intervals, idxGRF, idxGRM, Qs_col_opt_nsc, Qds_col_opt_nsc, QsQds_col_opt_nsc, Qdds_col_opt_nsc, aArm_col_opt, MTP_reserve_col_opt, scaling_vector_opt, model_mass_opt, scalingArmA)
 
+        time_col_opt_full = np.concatenate((np.zeros(1,), time_col_opt, time_col_opt+time_col_opt[-1]))
+        utilities.generate_GRF_file(path_results, GRF_col_opt, GRM_col_opt, time_col_opt_full)
+
         Qs_max_iso_torque, maximal_isometric_torques, passive_isometric_torques, max_iso_torques_joints = utilities.get_max_iso_torques(f_get_muscle_tendon_length_velocity_moment_arm, f_hillEquilibrium, joints, number_of_muscles, muscle_actuated_joints, muscle_actuated_joints_indices_in_joints, muscle_articulated_bodies_indices_in_skeleton_scaling_bodies, muscle_scaling_vector_opt, scaling_vector_opt, model_mass_scaling_opt, muscle_cross_section_multiplier_opt)
 
         # Store and save
@@ -874,6 +886,7 @@ for case in cases:
             optimaltrajectories = optimaltrajectories.item()
 
         optimaltrajectories[case] = {
+                'stats': stats,
                 'settings': settings[case],
                 'muscle_cross_section_multiplier_opt': muscle_cross_section_multiplier_opt,
                 'speed': speed,

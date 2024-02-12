@@ -13,7 +13,51 @@ import opensim
 import copy, os
 import muscleData
 
-def generate_full_gait_cycle_kinematics(path_results, joints, number_of_joints, number_of_mesh_intervals, finalTime_opt, Qs_opt, scaling_Q, rotational_joint_indices_in_joints, periodic_joints_indices_start_to_end_position_matching, periodic_opposite_joints_indices_in_joints):
+
+def generate_GRF_file(pathResults, GRF, GRM, time_col_opt_full):
+    GRF_GC = np.concatenate((np.concatenate((GRF[:3,:], GRF[3:,:]), 1), np.concatenate((GRF[3:,:], GRF[:3,:]), 1)),0)
+    GRF_GC = np.concatenate((np.reshape(GRF_GC[:,0],(6,1)),GRF_GC),1)
+    GRM_GC = np.concatenate((np.concatenate((GRM[:3,:], GRM[3:,:]), 1), np.concatenate((GRM[3:,:], GRM[:3,:]), 1)),0)
+    GRM_GC = np.concatenate((np.reshape(GRM_GC[:,0],(6,1)), GRM_GC), 1)
+    tgrid_GC = time_col_opt_full
+    COPr_GC, freeTr_GC = getCOP(GRF_GC[:3,:], GRM_GC[:3,:])
+    COPl_GC, freeTl_GC = getCOP(GRF_GC[3:,:], GRM_GC[3:,:])
+    COP_GC = np.concatenate((COPr_GC, COPl_GC))
+    freeT_GC = np.concatenate((freeTr_GC, freeTl_GC))
+    # Post-processing.
+    GRF_GC_toPrint = np.copy(GRF_GC)
+    COP_GC_toPrint = np.copy(COP_GC)
+    freeT_GC_toPrint = np.copy(freeT_GC)
+    idx_r = np.argwhere(GRF_GC_toPrint[1, :] < 30)
+    for tr in range(idx_r.shape[0]):
+        GRF_GC_toPrint[:3, idx_r[tr, 0]] = 0
+        COP_GC_toPrint[:3, idx_r[tr, 0]] = 0
+        freeT_GC_toPrint[:3, idx_r[tr, 0]] = 0
+    idx_l = np.argwhere(GRF_GC_toPrint[4, :] < 30)
+    for tl in range(idx_l.shape[0]):
+        GRF_GC_toPrint[3:, idx_l[tl, 0]] = 0
+        COP_GC_toPrint[3:, idx_l[tl, 0]] = 0
+        freeT_GC_toPrint[3:, idx_l[tl, 0]] = 0
+    grf_cop_Labels = [
+        'r_ground_force_vx', 'r_ground_force_vy', 'r_ground_force_vz',
+        'r_ground_force_px', 'r_ground_force_py', 'r_ground_force_pz',
+        'l_ground_force_vx', 'l_ground_force_vy', 'l_ground_force_vz',
+        'l_ground_force_px', 'l_ground_force_py', 'l_ground_force_pz']
+    grmLabels = [
+        'r_ground_torque_x', 'r_ground_torque_y', 'r_ground_torque_z',
+        'l_ground_torque_x', 'l_ground_torque_y', 'l_ground_torque_z']
+    GRFNames = ['GRF_x_r', 'GRF_y_r', 'GRF_z_r',
+                'GRF_x_l','GRF_y_l', 'GRF_z_l']
+    grLabels = grf_cop_Labels + grmLabels
+    labels = ['time'] + grLabels
+    data = np.concatenate(
+        (np.reshape(tgrid_GC,(301,1)), GRF_GC_toPrint[:3,:].T, COP_GC_toPrint[:3,:].T,
+         GRF_GC_toPrint[3:,:].T, COP_GC_toPrint[3:,:].T,
+         freeT_GC_toPrint.T), axis=1)
+    numpy2storage(labels, data, os.path.join(pathResults, 'GRF.mot'))
+
+
+def generate_full_gait_cycle_kinematics(path_results, joints, muscles, number_of_joints, number_of_muscles, number_of_mesh_intervals, finalTime_opt, Qs_opt, scaling_Q, a_opt, rotational_joint_indices_in_joints, periodic_joints_indices_start_to_end_position_matching, periodic_opposite_joints_indices_in_joints, periodic_muscles_indices_start_to_end_matching):
     Qs_opt_part_2 = np.zeros((number_of_joints, number_of_mesh_intervals))
     Qs_opt_part_2[:, :] = Qs_opt[:, 1:]
     Qs_opt_part_2[periodic_joints_indices_start_to_end_position_matching[1], :] = Qs_opt[
@@ -23,18 +67,27 @@ def generate_full_gait_cycle_kinematics(path_results, joints, number_of_joints, 
                                                                     1:]
     Qs_opt_part_2[joints.index('pelvis_tx'), :] = Qs_opt[joints.index('pelvis_tx'), 1:] + Qs_opt[
         joints.index('pelvis_tx'), -1]
+
     Qs_gait_cycle_opt = np.concatenate((Qs_opt, Qs_opt_part_2), 1)
 
-    labels = ['time'] + joints
+    a_opt_part_2 = np.zeros((number_of_muscles, number_of_mesh_intervals))
+    a_opt_part_2[:, :] = a_opt[:, 1:]
+    a_opt_part_2[periodic_muscles_indices_start_to_end_matching[1], :] = a_opt[
+                                                                                  periodic_muscles_indices_start_to_end_matching[
+                                                                                      0], 1:]
+
+    a_gait_cycle_opt = np.concatenate((a_opt, a_opt_part_2), 1)
+
+    labels = ['time'] + joints + muscles
     tgrid_GC =  np.linspace(0, 2 * finalTime_opt[0], 2 * number_of_mesh_intervals + 1)
     Qs_gait_cycle_nsc = (
                 Qs_gait_cycle_opt * (scaling_Q.to_numpy().T * np.ones((1, 2 * number_of_mesh_intervals + 1)))).T
     Qs_gait_cycle_nsc[:, rotational_joint_indices_in_joints] = 180 / np.pi * Qs_gait_cycle_nsc[:,
                                                                              rotational_joint_indices_in_joints]
-    data = np.concatenate((np.reshape(tgrid_GC, (2 * number_of_mesh_intervals + 1, 1)), Qs_gait_cycle_nsc), axis=1)
+    data = np.concatenate((np.reshape(tgrid_GC, (2 * number_of_mesh_intervals + 1, 1)), Qs_gait_cycle_nsc, a_gait_cycle_opt.transpose()), axis=1)
     from utilities import numpy2storage
 
-    numpy2storage(labels, data, os.path.join(path_results, 'motion.mot'))
+    numpy2storage(labels, data, os.path.join(path_results, 'motion.sto'))
 
     return Qs_gait_cycle_opt, tgrid_GC, Qs_gait_cycle_nsc
 
@@ -483,6 +536,46 @@ def get_time_col_opt(finalTime_opt, number_of_mesh_intervals, polynomial_order):
     time_col_opt = np.reshape(time_col_opt, (polynomial_order * number_of_mesh_intervals,))
     return time_col_opt
 
+def get_full_gait_cycle_joint_variables(joint_names, variable):
+    variable_full_gait_cycle = np.zeros((np.shape(variable)[0], 2*np.shape(variable)[1]))
+    half_gait_cycle_length = int(np.shape(variable_full_gait_cycle)[1]/2)
+    joint_names_reduced = []
+    for j, joint_name in enumerate(joint_names):
+        if joint_name == 'pelvis_tilt':
+            variable_full_gait_cycle[len(joint_names_reduced), :] = np.concatenate((variable[j, :], variable[j, :]))
+            joint_names_reduced.append(joint_name)
+        if joint_name == 'pelvis_list':
+            variable_full_gait_cycle[len(joint_names_reduced), :] = np.concatenate((variable[j, :], -variable[j, :]))
+            joint_names_reduced.append(joint_name)
+        if joint_name == 'pelvis_rotation':
+            variable_full_gait_cycle[len(joint_names_reduced), :] = np.concatenate((variable[j, :], -variable[j, :]))
+            joint_names_reduced.append(joint_name)
+        if joint_name == 'pelvis_tx':
+            variable_full_gait_cycle[len(joint_names_reduced), :] = np.concatenate((variable[j, :], variable[j, :]))
+            joint_names_reduced.append(joint_name)
+        if joint_name == 'pelvis_ty':
+            variable_full_gait_cycle[len(joint_names_reduced), :] = np.concatenate((variable[j, :], variable[j, :]))
+            joint_names_reduced.append(joint_name)
+        if joint_name == 'pelvis_tz':
+            variable_full_gait_cycle[len(joint_names_reduced), :] = np.concatenate((variable[j, :], -variable[j, :]))
+            joint_names_reduced.append(joint_name)
+        if joint_name == 'lumbar_extension':
+            variable_full_gait_cycle[len(joint_names_reduced), :] = np.concatenate((variable[j, :], variable[j, :]))
+            joint_names_reduced.append(joint_name)
+        if joint_name == 'lumbar_rotation':
+            variable_full_gait_cycle[len(joint_names_reduced), :] = np.concatenate((variable[j, :], -variable[j, :]))
+            joint_names_reduced.append(joint_name)
+        if joint_name == 'lumbar_bending':
+            variable_full_gait_cycle[len(joint_names_reduced), :] = np.concatenate((variable[j, :], -variable[j, :]))
+            joint_names_reduced.append(joint_name)
+        if joint_name[-1] == 'r':
+            joint_name_l = joint_name[:-1] + 'l'
+            joint_name_l_index = joint_names.index(joint_name_l)
+            variable_full_gait_cycle[len(joint_names_reduced), :half_gait_cycle_length] = variable[j,:]
+            variable_full_gait_cycle[len(joint_names_reduced), half_gait_cycle_length:] = variable[joint_name_l_index,:]
+            joint_names_reduced.append(joint_name[:-2])
+    variable_full_gait_cycle = variable_full_gait_cycle[:len(joint_names_reduced),:]
+    return variable_full_gait_cycle, joint_names_reduced
 
 
 def get_metabolic_energy_outcomes(metabolicEnergyRate_col_opt, time_col_opt, halfGC_length, model_mass_opt):
@@ -940,10 +1033,16 @@ def numpy2storage(labels, data, storage_file):
     assert labels[0] == "time"
     
     f = open(storage_file, 'w')
-    f.write('name %s\n' %storage_file)
-    f.write('datacolumns %d\n' %data.shape[1])
-    f.write('datarows %d\n' %data.shape[0])
-    f.write('range %f %f\n' %(np.min(data[:, 0]), np.max(data[:, 0])))
+    # f.write('name %s\n' %storage_file)
+    # f.write('datacolumns %d\n' %data.shape[1])
+    # f.write('datarows %d\n' %data.shape[0])
+    # f.write('range %f %f\n' %(np.min(data[:, 0]), np.max(data[:, 0])))
+    # f.write('endheader \n')
+
+    f.write('version = 1\n')
+    f.write('nColumns = %d\n' %data.shape[1])
+    f.write('nRows = %d\n' %data.shape[0])
+    f.write('inDegrees = yes\n')
     f.write('endheader \n')
     
     for i in range(len(labels)):

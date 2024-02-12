@@ -12,7 +12,7 @@ if __name__ == '__main__':
     #####################################################################
     # FLOW CONTROL
     #####################################################################
-    generate_randomly_scaled_models = True
+    generate_randomly_scaled_models = False
     generate_ground_truth_data_all_muscles = True
     train_model = True
     convert_to_NumPy = True

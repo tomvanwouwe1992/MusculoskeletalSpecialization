@@ -204,6 +204,34 @@ def generateScaledModels(i, default_scale_tool_xml_name, scale_vector,
 
     scaled_model_opensim = opensim.Model(scaled_model_path)
 
+    # throw out muscles from opensim model
+    muscles = scaled_model_opensim.getMuscles()
+
+    # load 2354
+    path_2354 = os.path.join(os.path.dirname(os.path.dirname(save_path)),'gait2354_simbody.osim')
+    model_2354 = opensim.Model(path_2354)
+    muscles_2354 = model_2354.getMuscles()
+    names_2354 = []
+    for i in range(muscles_2354.getSize()):
+        names_2354.append(muscles_2354.get(i).getName())
+
+    names_2392 = []
+    for i in range(muscles.getSize()):
+        names_2392.append(muscles.get(i).getName())
+
+    muscles_to_remove = []
+    for muscle in muscles:
+        if muscle.getName() not in names_2354:
+            muscles_to_remove.append(muscle.getName())
+
+    for muscle_to_remove_name in muscles_to_remove:
+        index = muscles.getIndex(muscle_to_remove_name)
+        scaled_model_opensim.updForceSet().remove(index)
+        muscles = scaled_model_opensim.getMuscles()
+
+    scaled_model_opensim.initSystem()
+    scaled_model_opensim.finalizeConnections()
+
     knee_joint_l = scaled_model_opensim.getJointSet().get('knee_l')
     knee_joint_l_dc = opensim.CustomJoint_safeDownCast(knee_joint_l)
     knee_spatial_transform = knee_joint_l_dc.getSpatialTransform()
@@ -345,7 +373,7 @@ def generateScaledModels_NeMu(i, default_scale_tool_xml_name, scale_vector, root
     TA_MultiplierFunction = opensim.MultiplierFunction_safeDownCast(TA_translation3.get_function())
     TA_MultiplierFunction.setScale(scale_vector[8])
     knee_spatial_transform.updTransformAxis(5)
-    scaled_model_path = os.path.join(save_path, 'ScaledModels/scaledModel_' + str(i) + '.osim')
+    scaled_model_path = os.path.join(save_path, 'ScaledModels/scaledModel' + '.osim')
     scaled_model_opensim.printToXML(scaled_model_path)
 
 def sampleMomentArmsMuscleTendonLengths(muscle, indices_of_included_coordinates, ROM_all, min_angle_all, max_angle_all, number_of_used_scaled_models, scale_vectors, save_path):
@@ -518,7 +546,9 @@ def get_mtu_length_and_moment_arm(model_os, muscle, q):
         model_os.realizePosition(state)
 
         muscle_os = model_os.getMuscles().get(muscle.index)
-
+        x = model_os.getJointSet().get(3).getParentFrame().getPositionInGround(state)[0]
+        y = model_os.getJointSet().get(3).getParentFrame().getPositionInGround(state)[1]
+        z = model_os.getJointSet().get(3).getParentFrame().getPositionInGround(state)[2]
         trajectory_mtu_length[i] = muscle_os.getLength(state)
         coordinate_set = model_os.getCoordinateSet()
         for k in range(len(actuated_coordinate_indices)):
@@ -805,6 +835,9 @@ def NeMuApproximation(muscle_names, joint_names, body_names, NeMu_folder):
             scaling_factor_indices.append(3 * index)
             scaling_factor_indices.append(3 * index + 1)
             scaling_factor_indices.append(3 * index + 2)
+        scaling_factor_indices.sort()
+        print(muscle_name)
+        print(scaling_factor_indices)
 
 
         ## joint position/velocity indices
